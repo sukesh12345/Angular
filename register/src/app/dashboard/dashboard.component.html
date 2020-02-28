@@ -1,0 +1,135 @@
+<div>
+  <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+    <div class="navbar-collapse" id="navbarCollapse" style="padding-right:0px;right:0; ">
+      <input type="button" value="Deactivate"  onclick="document.getElementById('div_confirm').style.display='block';"
+        class="btn btn-outline-light">
+      &nbsp;<button type="button" class="btn btn-outline-light" id="button" value="Edit" (click)="edit()"
+        onclick="document.getElementById('div_edit').style.display='block';">Edit</button>
+      <button type="button" (click)="logout()" id="logout" class="btn btn-outline-light ">Logout</button>
+    </div>
+  </nav>
+
+
+  <div class="row">
+    <div class="col-md-3 div-table" style="padding-right: 0px;top:0%;">
+      <table id="tbl" class="table text-black">
+        <tr>
+          <td>Id</td>
+          <td>{{lstcomments.Id}}</td>
+        </tr>
+        <tr>
+          <td>Name</td>
+          <td>{{lstcomments.Name}}</td>
+        </tr>
+        <tr>
+          <td>Address</td>
+          <td>{{lstcomments.Address}}</td>
+        </tr>
+        <tr>
+          <td>Email</td>
+          <td>{{lstcomments.Email}}</td>
+        </tr>
+        <tr>
+          <td>Telephone</td>
+          <td>{{lstcomments.Telephone}}</td>
+        </tr>
+        <tr>
+          <td>Gender</td>
+          <td>{{lstcomments.Gender}}</td>
+        </tr>
+        <tr>
+          <td>Course</td>
+          <td>{{lstcomments.Course}}</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="col" style="float: right;right:0;bottom:0; padding-right: 0px;  overflow: auto;">
+      <div id="div_edit" align="center" class="modal">
+        <div style="width: 30%;right: 60px;">
+          <form name="form_login" id="form_login" class="modal-content animate" method="POST">
+            <div class="imgcontainer">
+              <span onclick="document.getElementById('div_edit').style.display='none'" class="close" id="close"
+                title="Close Modal">&times;</span>
+            </div>
+            <div class="container" style="padding: 16px; ">
+              <small id="update_error_msg" class="text-danger"></small>
+              <label>Fullname:</label><sup class="text-danger">*</sup><small id="name_error_msg" name="error_msg"
+                class="text-danger"></small>
+              <input type="text" [(ngModel)]="editname" class="form-control" id="Name" placeholder="Fullname"
+                class="value" name="Name">
+              <label>Address:</label><sup class="text-danger">*</sup> <small id="address_error_msg" name="error_msg"
+                class="text-danger"></small>
+              <input type="text" [(ngModel)]="editaddress" class="form-control" id="Address"
+                placeholder="Complete Address" class="class" name="Address">
+              <label>E-mail Address:</label><sup class="text-danger">*</sup><small id="mail_error_msg" name="error_msg"
+                class="text-danger"></small>
+              <input type="email" [(ngModel)]="editemail" class="form-control" id="Email"
+                placeholder="example@email.com" class="value" name="Email">
+              <label>Gender:</label><sup class="text-danger">*</sup><br>
+              <input type="radio" id="gender" name="gender" [(ngModel)]="editgender" class="valu" value="male">Male
+              <input type="radio" class="valu" id="gender" [(ngModel)]="editgender" name="gender" value="female">Female
+              <input type="radio" name="gender" id="gender" [(ngModel)]="editgender" class="valu" value="other">Other<br>
+              <label>Course:</label><sup class="text-danger">*</sup>
+              <select type="text" [(ngModel)]="editcourse" class="form-control" class="value" id="Course" name="Course">
+                <option>BTECH</option>
+                <option>BBA</option>
+                <option>BCA</option>
+                <option>B.COM</option>
+              </select>
+            </div>
+            <div class="container" style="background-color:#f1f1f1">
+              <!-- <button type="button" id="button" onclick="$verify();" class="btn btn-success">Verify</button> -->
+              <button type="button" id="button" (click)="update()" onclick="document.getElementById('div_edit').style.display='none'" class="save_button btn btn-success"
+                >Save</button>
+            </div>
+          </form>
+        </div>
+
+      </div>
+      <ul class="list-group">
+        <li class="list-group-item bg-info text-white"></li>
+        <li class="list-group-item bg-info text-white"></li>
+        <li class="list-group-item bg-info text-white"></li>
+        <li class="list-group-item bg-info text-white"></li>
+        <li class="list-group-item bg-info text-white"></li>
+        <li class="list-group-item bg-info text-white"></li>
+        <li class="list-group-item bg-info text-white"></li>
+        <li class="list-group-item bg-info text-white"></li>
+        <li class="list-group-item bg-info text-white"></li>
+        <li class="list-group-item bg-info text-white"></li>
+        <li class="list-group-item bg-info text-white"></li>
+        <li class="list-group-item bg-info text-white"></li>
+        <li class="list-group-item bg-info text-white"></li>
+        <li class="list-group-item bg-info text-white"></li>
+        <li class="list-group-item bg-info text-white"></li>
+        <li class="list-group-item bg-info text-white"></li>
+        <li class="list-group-item bg-info text-white"></li>
+        <li class="list-group-item bg-info text-white"></li>
+        <li class="list-group-item bg-info text-white"></li>
+        <li class="list-group-item bg-info text-white"></li>
+        <li class="list-group-item bg-info text-white"></li>
+        <li class="list-group-item bg-info text-white"></li>
+        <li class="list-group-item bg-info text-white"></li>
+
+      </ul>
+    </div>
+  </div>
+  <div id="div_confirm" align="center" class="modal">
+    <div style="width: 20%;right: 60px;">
+      <div class="modal-content animate">
+
+
+        <div class="container" style="padding: 16px; ">
+          <label>Are you sure?</label><br>
+          <small class="text-danger">All your data will be lost.</small>
+        </div>
+        <div class="container">
+          <button type="button" id="no_button" onclick="document.getElementById('div_confirm').style.display='none'"
+            class="cancelbtn btn btn-block btn-success">No</button>
+          <button type="button" id="yes_button" (click)="delete()" onclick="document.getElementById('div_confirm').style.display='none'"
+            class="cancelbtn btn btn-block btn-danger">Yes</button>
+
+        </div>
+      </div>
+    </div>

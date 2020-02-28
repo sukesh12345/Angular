@@ -1,0 +1,37 @@
+
+<div class="login-form">
+    
+<form  id="form_login"  method="post">      
+    <h2 class="text-center">Log in</h2> 
+    <div class="form-group">
+        <input type="text" [(ngModel)]="username" class="form-control value" (change)="loginName(name.value)" (keyup)="loginName(name.value)" #name  placeholder="Username"
+        name="username">
+        <span class="text-danger">{{nameerror}}</span>
+    </div>
+    <div class="form-group">
+        <input type="password" [(ngModel)]="userpassword" name="userpassword" class="form-control Password" (change)="loginPassword(password.value)" (keyup)="loginPassword(password.value)" (click)="loginName(name.value)"  placeholder="Password" #password>
+        <span 
+        class="text-danger">{{passworderror}}</span>
+    </div>
+    <div class="form-group">
+        <button type="submit" (click)="loginName(name.value);loginPassword(password.value);login(name.value,password.value);password.value='';" class="btn btn-primary btn-block" id="modalbutton_login" >Log in</button>
+        <span id="credential_error_msg" name="credential_error_msg" class="text-danger text-center">{{credential_error_msg}}</span>
+    </div>
+    <div class="clearfix">
+        <label class="pull-left checkbox-inline"><input type="checkbox"> Remember me</label>
+       <!-- <a href="admin.html" class="pull-right">Admin Login</a> -->
+    </div>        
+</form>
+</div>
+<!-- <div *ngIf="list">
+<ul>
+    {{lstcomments.Id}}
+    {{lstcomments.Name}}
+    {{lstcomments.Address}}
+    {{lstcomments.Email}}
+    {{lstcomments.Password}}
+    {{lstcomments.Telephone}}
+    {{lstcomments.Gender}}
+    {{lstcomments.Course}}
+</ul>
+</div> -->

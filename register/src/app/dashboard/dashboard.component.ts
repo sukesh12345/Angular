@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { freeApiService} from '../services/freeapi.service'
 import { Router } from '@angular/router';
+// import {lstcomments} from '../classes/data';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -12,25 +13,29 @@ import { Router } from '@angular/router';
 // }
 
 export class DashboardComponent implements OnInit {
-  lstcomments: lstcomments;
+  lstcomments:lstcomments;
   id:any;
+  num:any;
   editname:any;
   editaddress:any;
   editemail:any;
   editgender:any;
   editcourse:any;
+  temp:any;
+  list:boolean;
   // const gender=[{'male':false}];
   constructor(private _freeApiService: freeApiService,private route:Router) { }
   ngOnInit(): void {
-   this.id= localStorage.getItem('id')
-    this._freeApiService.getcomments(this.id)
+    console.log("dashboard");
+   
+   
+    this._freeApiService.getcomments()
     .subscribe
     (
       data=>{
-       
-        console.log(data);    
-        this.lstcomments = data.result;
-           
+        this.list=true;
+        this.num = data.data;
+        this.lstcomments=data.data   
       }
     )
   }
@@ -39,12 +44,15 @@ export class DashboardComponent implements OnInit {
     this.route.navigate(['']);
   }
   edit(){
-    console.log("hi"+this.lstcomments.Name);
-      this.editname=this.lstcomments.Name;
-      this.editaddress=this.lstcomments.Address;
-      this.editgender=this.lstcomments.Gender
-      this.editemail=this.lstcomments.Email;
-      this.editcourse=this.lstcomments.Course;
+    
+      this.editname=this.lstcomments.Name[0];
+      this.editaddress=this.lstcomments.Address[0];
+      this.temp = this.lstcomments.Gender[0];
+      console.log(this.temp);
+      this.editgender= this.lstcomments.Gender[0];
+      
+      this.editemail=this.lstcomments.Email[0];
+      this.editcourse=this.lstcomments.Course[0];
 
   }
   delete()
@@ -71,8 +79,9 @@ export class DashboardComponent implements OnInit {
   // $Course = $vars->Course; 
 update(){
   console.log(this.editname);
+  console.log(this.lstcomments.Id);
   let updatedata={
-    "Id":this.id,
+    "Id":this.lstcomments.Id[0],
     "Name":this.editname,
     "Address":this.editaddress,
     "Email":this.editemail,
@@ -84,18 +93,20 @@ update(){
   (
     data=>{
       console.log(data);
-      this.lstcomments.Id=this.id;
-      this.lstcomments.Name=this.editname;
-      this.lstcomments.Address=this.editaddress;
-      this.lstcomments.Email=this.editemail;
-      this.lstcomments.Gender=this.editgender;
-      this.lstcomments.Course=this.editcourse;
+      this._freeApiService.getcomments()
+    .subscribe
+    (
+      data=>{
+        this.num = data.data;
+        this.lstcomments=data.data   
+      }
+    )
     }
   )
 }
 }
 interface lstcomments {
-  Id: number;
+  Id: any;
   Name: string;
   Address: string;
   Email: string;
@@ -104,3 +115,4 @@ interface lstcomments {
   Gender: string;
   Course: string;
 }
+

@@ -69,12 +69,17 @@ export class TestComponent implements OnInit {
           //his.lstcomments = data.result;
           //console.log(this.lstcomments);
           console.log("here"+(data.token));
+          console.log("data"+data.data);
+          localStorage.setItem('id',data.data);
           localStorage.setItem('token',data.token);
-          localStorage.setItem('id',JSON.parse(data.data).status);
-          this.id=localStorage.getItem('id');
-          //console.log("here"+this.id)
+          // localStorage.setItem('id',JSON.parse(data.data).status);
+          // this.id=localStorage.getItem('id');
+          // console.log("here"+this.id)
           this.username='';
           this._router.navigate(["profile"]);
+          }
+  register(){
+    this._router.navigate(["register"]);
   }
 }
 

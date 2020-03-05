@@ -1,0 +1,51 @@
+
+#progress {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 100;
+}
+
+
+sub {
+    font-weight: lighter;
+}
+
+#Name, #Address, #Email, #Password, #Telephone, #Course, #Comment {
+    width: 98%;
+    display: inline;
+    border-radius: 5px;
+}
+
+.button {
+    background-color: #0199ffe8;
+    border-radius: 10px;
+    font-weight: bolder;
+    font-size: 15px;
+}
+
+.background-selector {
+    border-style: inset;
+    border-radius: 25px;
+    background-color: khaki;
+}
+
+.image {
+    background-image: url("../../../Images/registrationbackground.jpg");
+    align-content: center;
+    background-repeat: no-repeat;
+}
+
+.table-div {
+    /* width: 60%;
+    top: 0;
+    right: 0;
+    position: absolute; */
+    background-color: #dff6f0;
+}
+
+.text-danger {
+    font-variant: normal;
+    font-weight: 600;
+}
+

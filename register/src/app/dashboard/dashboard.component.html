@@ -11,7 +11,7 @@
 
 
   <div class="row">
-    <div class="col-md-3 div-table" style="padding-right: 0px;top:0%;">
+    <div class="col-md-3 div-table" *ngIf="list" style="padding-right: 0px;top:0%;">
       <table id="tbl" class="table text-black">
         <tr>
           <td>Id</td>
@@ -67,9 +67,9 @@
               <input type="email" [(ngModel)]="editemail" class="form-control" id="Email"
                 placeholder="example@email.com" class="value" name="Email">
               <label>Gender:</label><sup class="text-danger">*</sup><br>
-              <input type="radio" id="gender" name="gender" [(ngModel)]="editgender" class="valu" value="male">Male
-              <input type="radio" class="valu" id="gender" [(ngModel)]="editgender" name="gender" value="female">Female
-              <input type="radio" name="gender" id="gender" [(ngModel)]="editgender" class="valu" value="other">Other<br>
+              <input type="radio" id="gender" name="gender" [(ngModel)]="editgender" class="valu" value="Male">Male
+              <input type="radio" class="valu" id="gender" [(ngModel)]="editgender" name="gender" value="Female">Female
+              <input type="radio" name="gender" id="gender" [(ngModel)]="editgender" class="valu" value="Other">Other<br>
               <label>Course:</label><sup class="text-danger">*</sup>
               <select type="text" [(ngModel)]="editcourse" class="form-control" class="value" id="Course" name="Course">
                 <option>BTECH</option>

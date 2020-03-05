@@ -1,0 +1,182 @@
+<!-- <div id="div_login" align="center" class="modal">
+    <div style="width: 30%;right: 60px;">
+      <form name="form_login" id="form_login" class="modal-content animate" method="POST">
+        <div class="imgcontainer">
+          <span onclick="document.getElementById('div_login').style.display='none'" class="close" id="close"
+            title="Close Modal">&times;</span>
+        </div>
+        <span id="credential_error_msg" name="credential_error_msg" class="text-danger"></span>
+        <div class="container" style="padding: 16px; ">
+          <label><b>Username</b></label> <span id="loginName_error_msg" name="loginName_error_msg"
+            class="text-danger">*</span>
+          <input type="text" class="form-control" onclick="$loginName_check()" id="login_Name" class="value"
+            name="login_Name"><br>
+
+          <label><b>Password</b></label><span id="loginPassword_error_msg" name="loginPassword_error_msg"
+            class="text-danger">*</span>
+          <input type="password" class="form-control" id="login_Password" class="Password" name="login_Password">
+          <br>
+          <br>
+          <input type="button" onclick="login()" class="btn btn-primary btn-block" id="modalbutton_login" value="Login"
+            disabled>
+          <label>
+            <input type="checkbox" checked="checked" name="remember"> Remember me
+          </label>
+        </div>
+        <div class="container" style="background-color:#f1f1f1">
+          <button type="button" id="cancel_button" align="left"
+            onclick="document.getElementById('div_login').style.display='none'"
+            class="cancelbtn btn btn-danger">Cancel</button>
+          <span class="psw">Forgot <a href="#">password?</a></span>-->
+<!-- 
+        </div>
+      </form>
+    </div>
+
+  </div> -->
+
+  <div class="row">
+    <div class="col image">
+    </div>
+    <div class="col-md-4 table-div">
+      <div class="progress-bar bg-success progress-bar-animated progress-bar-striped" id="progress"
+        style="height: 7.5px;width: 0%;"></div>
+      <div class="p-2 text-black">
+        <form name="RegForm" id="RegForm" method="POST">
+
+          <h4 class="display-4 form-group" align="center">REGISTER </h4>
+          <div class="form-row">
+            <div class="form-group col-md-5">
+              <label>Fullname:</label><sup class="text-danger">*</sup>
+            </div>
+            <div class="form-group col-md-7">
+              <input type="text" class="form-control" id="Name" placeholder="Fullname" class="value" [(ngModel)]="Name" name="Name">
+              <small id="name_error_msg" name="error_msg" class="text-danger"></small>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-5">
+              <label>Address:</label><sup class="text-danger">*</sup>
+            </div>
+            <div class="form-group col-md-7">
+              <input type="text" class="form-control" id="Address" placeholder="Complete Address" class="class"
+               [(ngModel)]="Address" name="Address">
+              <small id="address_error_msg" name="error_msg" class="text-danger"></small>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-md-5">
+              <label>E-mail Address:</label><sup class="text-danger">*</sup>
+            </div>
+            <div class="form-group col-md-7">
+              <input type="email" class="form-control" id="Email" placeholder="example@email.com" class="value"
+               [(ngModel)]="Email" name="Email">
+              <small id="mail_error_msg" name="error_msg" class="text-danger"></small>
+            </div>
+          </div>
+
+
+          <div class="form-row">
+            <div class="form-group col-md-5">
+              <label>Password:</label><sup class="text-danger">*</sup>
+            </div>
+            <div class="form-group col-md-7">
+              <input type="password" class="form-control" id="Password" placeholder="strong password" class="Paassword"
+               [(ngModel)]="Password" name="Password">
+              <span id="passwordHelpInline" class="text-muted">
+                Must be 8-20 characters long.
+              </span>
+              <small id="password_error_msg" name="error_msg" class="text-danger"></small>
+
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-md-5">
+              <label>Telephone:</label><sup class="text-danger">*</sup>
+            </div>
+            <div class="form-group col-md-7">
+              <input type="text" class="form-control" id="Telephone" minlength="10" maxlength="10"
+                placeholder="10digit number" onkeydown="return  restrictAlphabets(event)" class="value" [(ngModel)]="Telephone" name="Telephone"><br>
+              <small id="phone_error_msg" name="error_msg" class="text-danger"></small>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-md-5">
+              <label>Gender:</label><sup class="text-danger">*</sup>
+            </div>
+            <div class="form-group col-md-7">
+              <input type="radio" [(ngModel)]="Gender" id="gender" name="gender" class="valu" value="Male">Male
+              <input type="radio" [(ngModel)]="Gender" class="valu" id="gender" name="gender" value="Female">Female
+              <input type="radio" name="gender" [(ngModel)]="Gender" id="gender" class="valu" value="Other">Other<br>
+              <small id="gender_error_msg" name="error_msg" class="text-danger"></small>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-md-5">
+              <label>Course:</label><sup class="text-danger">*</sup>
+            </div>
+            <div class="form-group col-md-7">
+              <select type="text" class="form-control"  [(ngModel)]="Course" class="value" id="Course" name="Course">
+                <option>BTECH</option>
+                <option>BBA</option>
+                <option>BCA</option>
+                <option>B.COM</option>
+              </select><br>
+              <small id="course_error_msg" name="error_msg" class="text-danger"></small>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-md-5">
+              <label>Comments:</label>
+            </div>
+            <div class="form-group col-md-7">
+              <textarea id="Comment" class="form-control" name="Comment">  </textarea>
+            </div>
+          </div>
+          <div class="form-check" align="center">
+            <input class="form-check-input term" type="checkbox" value="" id="Terms" name="ch"><sup
+              class="text-danger">*</sup>
+            <label class="form-check-label terms" for="Terms">
+              Term and Conditions.
+            </label><br>
+            <small id="terms_error_msg" name="error_msg" class="text-danger"></small>
+          </div>
+          <div class="form-row" align="center">
+            <div class="form-group col-md-12">
+              <small id="register_message" name="register_message" class="text-danger"></small>
+            </div>
+          </div>
+          <span class="text-danger">{{error}}</span>
+
+          <div class="form-row" id="button">
+            <div class="form-group col-md-6">
+              <input type="reset" value="Reset" class="btn btn-primary btn-block" id="reset_button"
+                onclick="$clearwarnings();" name="Reset">
+            </div>
+            <div class="form-group col-md-6">
+              <input type="button" class="btn btn-primary btn-block" id="btn" (click)="register()" value="Register"
+                name="btn">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-12">
+              <input type="button" (click)="login()"
+                class="btn btn-primary btn-block" id="button_login" value="Login">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-14">
+              <span class="text-info">NOTE:Phone number will be your Username</span>
+            </div>
+          </div>
+          
+        </form>
+       
+      </div>
+    </div>
+  </div>

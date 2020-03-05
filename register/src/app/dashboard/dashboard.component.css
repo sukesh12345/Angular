@@ -55,7 +55,7 @@ sub {
     min-inline-size: fit-content;
     /* top: 0; */
     bottom: 0;
-    padding-left: 5px;
+    padding-left: 15px;
 }
 .container {
     padding: 10px;

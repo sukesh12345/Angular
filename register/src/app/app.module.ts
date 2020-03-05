@@ -8,13 +8,14 @@ import {freeApiService} from './services/freeapi.service';
 import {FormsModule} from '@angular/forms';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { RouterModule, Routes } from '@angular/router';
-
 import { AuthGuard } from './auth.guard';
+import { RegisterComponent } from './register/register.component';
 @NgModule({
   declarations: [
     AppComponent,
     TestComponent,
-    DashboardComponent
+    DashboardComponent,
+    RegisterComponent
   ],
   imports: [
     BrowserModule,
@@ -23,8 +24,10 @@ import { AuthGuard } from './auth.guard';
     FormsModule,
     RouterModule.forRoot([
       { path: '', component: TestComponent },
-      { path: 'profile', component: DashboardComponent ,resolve:[AuthGuard]},
+      { path: 'register', component: RegisterComponent },
+      { path: 'profile', component: DashboardComponent ,resolve:[AuthGuard]}
     ])
+    
   ],
   providers: [freeApiService],
   bootstrap: [AppComponent]

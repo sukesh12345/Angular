@@ -15,7 +15,7 @@ export class AuthGuard implements CanActivate {
   resolve(route: ActivatedRouteSnapshot){
     //console.log("auth");
     //console.log(localStorage.getItem("id"));
-    if( localStorage.getItem("id") ) {
+    if( localStorage.getItem("token") ) {
       //console.log("authqwef");
       return true;
     }

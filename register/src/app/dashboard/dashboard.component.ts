@@ -25,10 +25,7 @@ export class DashboardComponent implements OnInit {
   list:boolean;
   // const gender=[{'male':false}];
   constructor(private _freeApiService: freeApiService,private route:Router) { }
-  ngOnInit(): void {
-    console.log("dashboard");
-   
-   
+  ngOnInit(): void { 
     this._freeApiService.getcomments()
     .subscribe
     (

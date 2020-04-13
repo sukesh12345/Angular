@@ -45,7 +45,6 @@ export class RegisterComponent implements OnInit {
       data => {
         console.log(data);
         this.error="Registered Successfully";
-        window.alert("here");
        this.login();
        this.error="";
 

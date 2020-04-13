@@ -4,6 +4,7 @@ import { freeApiService } from '../services/freeapi.service';
 import { Route } from '@angular/compiler/src/core';
 import { Router } from '@angular/router';
 import { error } from '@angular/compiler/src/util';
+
 @Component({
   selector: 'app-test',
   templateUrl: './test.component.html',

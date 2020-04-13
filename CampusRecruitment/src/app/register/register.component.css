@@ -1,0 +1,50 @@
+.register-form {
+    min-width: 150px;
+    max-width: 500px;
+    width: 100%;
+}
+
+.full-width {
+    width: 100%;
+}
+
+td {
+    padding-right: 8px;
+}
+
+.register {
+    align-self: center;
+     left: 35%;
+     right: 35%;margin-top: 5%;
+    background-attachment: fixed;
+    width: 35%;
+    top: 0;
+    right: 0;
+    padding-left: 5px;
+    height: 100%;
+}
+
+input.telephone {
+    -moz-appearance: textfield;
+}
+
+input.telephone::-webkit-outer-spin-button, input.telephone::-webkit-inner-spin-button {
+    display: none;
+}
+
+mat-grid-tile {
+    background: lightblue;
+}
+
+input.example-right-align {
+  -moz-appearance: textfield;
+}
+/* .example-container {
+    display: flex;
+    flex-direction: column;
+    padding-top: 20px;
+  }
+  
+  .example-container > * {
+    width: 100%;
+  } */

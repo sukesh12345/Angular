@@ -1,0 +1,43 @@
+<mat-toolbar color="primary">
+    <mat-toolbar-row>
+        <button mat-button [matMenuTriggerFor]="menu">Hi {{userinfo.Firstname[0]}}!!<span class="material-icons">
+                expand_more
+            </span></button>
+        <mat-menu #menu="matMenu">
+            <button mat-menu-item>Update Profile</button>
+            <button mat-menu-item (click)="logout()">Logout</button>
+            <span class="cursor">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                 <mat-icon>expand_less</mat-icon>
+            </span>
+
+        </mat-menu>
+        <span class="spacer"></span>
+        <!-- <mat-icon class="example-icon" aria-hidden="false" aria-label="Example heart icon">favorite</mat-icon> -->
+        <span class="space">About</span>
+        <span class="cursor">Contact Us</span>
+
+    </mat-toolbar-row>
+
+
+</mat-toolbar>
+<div class="rowjobs">
+    <mat-card class="example-card">
+        <mat-card-header>
+            Job name
+            <!-- <span class="material-icons">
+                    work
+                    </span> -->
+            <mat-icon>work</mat-icon>
+        </mat-card-header>
+        <mat-card-content>
+            <p>
+                Job description
+            </p>
+        </mat-card-content>
+        <mat-card-actions>
+            <button mat-flat-button color="primary">Apply</button>
+            <button mat-flat-button color="primary" style="margin-left: 10px;">View Details</button>
+        </mat-card-actions>
+    </mat-card>
+</div>

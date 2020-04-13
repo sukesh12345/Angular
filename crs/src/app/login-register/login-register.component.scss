@@ -1,0 +1,28 @@
+.example-container {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .example-container > * {
+    width: 100%;
+  }
+  input.telephone::-webkit-outer-spin-button, input.telephone::-webkit-inner-spin-button {
+    display: none;
+}
+.example-icon {
+  padding: 0 14px;
+}
+.spacer {
+  flex: 1 1 auto;
+}
+.space{
+  padding-right: 20px;
+  cursor: pointer;
+}
+.showicon{
+  transform: scale(0.75);
+  cursor: pointer;
+}
+.cursor{
+  cursor: pointer;
+}

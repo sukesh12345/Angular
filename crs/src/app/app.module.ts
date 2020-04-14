@@ -20,11 +20,15 @@ import { AuthGuard } from './auth.guard';
 import {MatCardModule} from '@angular/material/card';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
+import { UpdateComponent } from './update/update.component';
+import {MatExpansionModule} from '@angular/material/expansion';
+
 @NgModule({
   declarations: [
     AppComponent,
     LoginRegisterComponent,
-    DashboardComponent
+    DashboardComponent,
+    UpdateComponent
   ],
   imports: [
     BrowserModule,
@@ -47,10 +51,12 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
     MatCardModule,
     MatMenuModule,
     MatSnackBarModule,
+    MatExpansionModule,
     // MaterialModue,
     RouterModule.forRoot([
       { path: '', component: LoginRegisterComponent },
-      { path: 'profile', component: DashboardComponent ,resolve:[AuthGuard]}
+      { path: 'profile', component: DashboardComponent ,resolve:[AuthGuard]},
+      { path: 'update', component: UpdateComponent ,resolve:[AuthGuard]}
     ]),
     
   ],

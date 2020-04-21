@@ -1,9 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, enableProdMode } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { validateVerticalPosition } from '@angular/cdk/overlay';
 import { ApiService } from '../services/api.service';
 import { Router } from '@angular/router';
-import {MatSnackBar} from '@angular/material/snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { usertype } from '../interface/interface';
+import { Observable } from 'rxjs';
+import { map, startWith } from 'rxjs/operators';
+
 
 @Component({
   selector: 'app-login-register',
@@ -11,7 +15,44 @@ import {MatSnackBar} from '@angular/material/snack-bar';
   styleUrls: ['./login-register.component.scss']
 })
 export class LoginRegisterComponent implements OnInit {
+  states: string[] = ["Andhra Pradesh",
+    "Arunachal Pradesh",
+    "Assam",
+    "Bihar",
+    "Chhattisgarh",
+    "Goa",
+    "Gujarat",
+    "Haryana",
+    "Himachal Pradesh",
+    "Jammu and Kashmir",
+    "Jharkhand",
+    "Karnataka",
+    "Kerala",
+    "Madhya Pradesh",
+    "Maharashtra",
+    "Manipur",
+    "Meghalaya",
+    "Mizoram",
+    "Nagaland",
+    "Odisha",
+    "Punjab",
+    "Rajasthan",
+    "Sikkim",
+    "Tamil Nadu",
+    "Telangana",
+    "Tripura",
+    "Uttarakhand",
+    "Uttar Pradesh",
+    "West Bengal",
+    "Andaman and Nicobar Islands",
+    "Chandigarh",
+    "Dadra and Nagar Haveli",
+    "Daman and Diu",
+    "Delhi",
+    "Lakshadweep",
+    "Puducherry"]
   password: any;
+  usertype: any;
   firstname: any;
   lastname: any;
   gender: any;
@@ -29,14 +70,26 @@ export class LoginRegisterComponent implements OnInit {
   compare: any;
   hide = true;
   date: any;
-  data:data;
-  loginsuccess:any;
+  data: data;
+  loginsuccess: any;
+  loginprogress: any;
   durationInSeconds = 5;
-  constructor(private ApiService: ApiService, private router: Router,private _snackBar: MatSnackBar) {
-  }
+  color: any;
 
+  constructor(private ApiService: ApiService, private router: Router, private _snackBar: MatSnackBar) {
+  }
+  filteredstates: Observable<string[]>;
   ngOnInit(): void {
-    this.loginsuccess=false;
+    this.loginprogress = false;
+    this.loginsuccess = false;
+    this.filteredstates = this.stateControl.valueChanges.pipe(
+      startWith(''),
+      map(value =>this._filter(value))
+      );
+  }
+  private _filter(value: any): any {
+    const filterValue = value.toLowerCase()
+    return this.states.filter(state=>state.toLocaleLowerCase().includes(filterValue))
   }
   emailFormControl = new FormControl('', [
     Validators.required,
@@ -62,7 +115,7 @@ export class LoginRegisterComponent implements OnInit {
     else {
       this.compare = false;
     }
-   }
+  }
   companycheckpasswords() {
     if (this.companypassword != this.companyconfirmpassword && this.companyconfirmpassword != '') {
       this.compare = true;
@@ -79,6 +132,7 @@ export class LoginRegisterComponent implements OnInit {
     Validators.required,
     Validators.pattern(this.compare)
   ]);
+  usertypeControl = new FormControl('', [Validators.required]);
   usernamecontrol = new FormControl('', [Validators.required]);
   loginpasswordcontrol = new FormControl('', [Validators.required]);
   firstnameControl = new FormControl('', [Validators.required]);
@@ -100,6 +154,10 @@ export class LoginRegisterComponent implements OnInit {
     { name: 'Female' },
     { name: 'Others' },
   ];
+  types: usertype[] = [
+    { name: 'Student' },
+    { name: 'Recruiter' }
+  ];
   minDate = new Date(1997, 0, 1);
   maxDate = new Date(1999, 0, 1);
   restrictAlphabets(e: { which: any; keycode: any; }) {
@@ -112,6 +170,7 @@ export class LoginRegisterComponent implements OnInit {
   }
   register() {
     let registerpayload = {
+      "type": this.usertypeControl.value.name,
       "firstname": this.firstname,
       "lastname": this.lastname,
       "gender": this.genderControl.value.name,
@@ -125,53 +184,58 @@ export class LoginRegisterComponent implements OnInit {
       "city": this.city,
       "state": this.state,
       "postalcode": this.postalcode,
-      "type":"Student"
     }
     this.ApiService.register(registerpayload)
       .subscribe
       (
         data => {
           let loginpayload = {
-            "username" : this.telephone,
-            "password" :this.password
+            "username": this.telephone,
+            "password": this.password
           }
           this.ApiService.login(loginpayload)
-          .subscribe
-          (
-            data=>{
-              this.loginresponse(data);
-            },
-            error=>{
-              this.loginsuccess = true;
-            }
-          )
+            .subscribe
+            (
+              data => {
+                this.loginresponse(data);
+              },
+              error => {
+                this.loginsuccess = true;
+              }
+            )
         },
         error => {
           console.log(error)
         }
       )
   }
-  login(){
+  login() {
+    this.loginprogress = true;
     let loginpayload = {
-      "username" : this.usernamecontrol.value,
-      "password" : this.loginpasswordcontrol.value
+      "username": this.usernamecontrol.value,
+      "password": this.loginpasswordcontrol.value
     }
-   this.ApiService.login(loginpayload)
-   .subscribe
-   (
-     data=>{
-        this.loginresponse(data);
-     },
-     error=>{
-       this.loginsuccess = true;
-     }
-   )
+    this.ApiService.login(loginpayload)
+      .subscribe
+      (
+        data => {
+          this.loginprogress = false;
+          this.color = 'primary';
+          this.loginresponse(data);
+        },
+        error => {
+          this.color = 'warn';
+          this.loginsuccess = true;
+        }
+      )
   }
-  loginresponse(data){
-    localStorage.setItem('token',data.token);
-    localStorage.setItem('id',data.data);
+  loginresponse(data) {
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('id', data.data);
     this.router.navigate(["profile"]);
   }
+  
+
 }
 
 export interface gender {
@@ -179,9 +243,9 @@ export interface gender {
 
 }
 
-export interface data{
+export interface data {
   token: string;
   data: string;
-  messsage : string;
+  messsage: string;
   status: any;
 }

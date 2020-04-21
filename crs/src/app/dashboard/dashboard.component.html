@@ -1,171 +1,331 @@
-<mat-toolbar color="primary">
-    <mat-toolbar-row>
-        <button mat-button [matMenuTriggerFor]="menu">Hi {{userinfo.Firstname[0]}}!!<span class="material-icons">
-                expand_more
-            </span></button>
-        <mat-menu #menu="matMenu">
-            <button mat-menu-item (click)="update()" *ngIf="expression">Update Profile</button>
-            <button mat-menu-item (click)="logout()">Logout</button>
-            <span class="cursor">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <mat-icon>expand_less</mat-icon>
-            </span>
+<mat-sidenav-container class="sidenav-container">
+    <mat-sidenav #sidenav mode="over" class="sidenav">
+        <p><button mat-button (click)="sidenav.toggle()"><span class="material-icons">
+                    keyboard_backspace
+                </span></button></p>
+        <p> <button mat-menu-item (click)="viewjoblist();sidenav.toggle();" *ngIf="viewjobstoggle">
+                &nbsp;&nbsp;<mat-icon color="primary">work</mat-icon>&nbsp;&nbsp;View Posted Jobs
+            </button></p>
+        <p>
+            <button mat-menu-item (click)="sidenav.toggle();viewmatchingjobs();" *ngIf="viewmatchingjobstoggle">&nbsp;&nbsp;<mat-icon
+                    color="primary">
+                    equalizer</mat-icon>&nbsp;&nbsp;<b>View matching Jobs</b>&nbsp;</button></p>
+        <p> <button mat-menu-item (click)="sidenav.toggle();appliedjobs();" *ngIf="appliedjobstoggle">
+                &nbsp;&nbsp;<mat-icon color="primary">work</mat-icon>&nbsp;&nbsp;<b>View Applied Jobs</b>
+            </button></p>
+        <p> <button mat-menu-item (click)="sidenav.toggle();update();" *ngIf="updateinfotoggle">
+                &nbsp;&nbsp;<mat-icon color="primary">account_box</mat-icon>&nbsp;&nbsp;<b>Update Profile</b>
+            </button></p>
+        <p>
+            <button mat-menu-item (click)="sidenav.toggle();addnewjob();" *ngIf="addjobtoggle">&nbsp;&nbsp;<mat-icon
+                    color="primary">
+                    add_box</mat-icon>&nbsp;&nbsp;<b>Add
+                    New</b>&nbsp;</button></p>
+        <p>
+            <button mat-menu-item (click)="logout()">&nbsp;&nbsp;<mat-icon color="primary">input</mat-icon>
+                &nbsp;&nbsp;<b>Log
+                    Out</b></button></p>
+    </mat-sidenav>
 
-        </mat-menu>
-        <span class="spacer"></span>
-        <!-- <mat-icon class="example-icon" aria-hidden="false" aria-label="Example heart icon">favorite</mat-icon> -->
-        <span class="space">About</span>
-        <span class="cursor">Contact Us</span>
+    <mat-sidenav-content>
+        <div class="fixed-toolbar">
+            <mat-toolbar color="primary" *ngIf="recruiter||student||addjob||updateinfo||nojobsmatch">
+                <mat-toolbar-row>
 
-    </mat-toolbar-row>
+                    <button mat-button *ngIf="load" (click)="sidenav.toggle()"> <span class="material-icons">
+                            menu
+                        </span>Hi {{userinfo.Firstname[0]}}!!</button>
+                    <mat-menu #menu="matMenu">
 
 
-</mat-toolbar>
-<div class="rowjobs" *ngIf="expression">
-    <mat-card class="example-card">
-        <mat-card-header>
-            Job name
-            <!-- <span class="material-icons">
-                    work
-                    </span> -->
-            <mat-icon>work</mat-icon>
-        </mat-card-header>
-        <mat-card-content>
-            <p>
-                Job description
-            </p>
-        </mat-card-content>
-        <mat-card-actions>
-            <button mat-flat-button color="primary">Apply</button>
-            <button mat-flat-button color="primary" style="margin-left: 10px;">View Details</button>
-        </mat-card-actions>
-    </mat-card>
-</div>
-<div *ngIf="updateinfo" class="info">
+                    </mat-menu>
+                    <span class="spacer"></span>
+                    <!-- <mat-icon class="example-icon" aria-hidden="false" aria-label="Example heart icon">favorite</mat-icon> -->
+                    <span class="space">About</span>
+                    <span class="cursor">Contact Us</span>
+                    <span class="space"></span>
 
-    <mat-accordion class="example-headers-align">
-        <mat-expansion-panel [expanded]="step === 0" (opened)="setStep(0)" hideToggle>
-            <mat-expansion-panel-header>
-                <mat-panel-title>
-                    Personal data
-                </mat-panel-title>
-                <mat-panel-description>
-                    Type your name and dob etc..
-                    <mat-icon>account_circle</mat-icon>
-                </mat-panel-description>
-            </mat-expansion-panel-header>
-            <div class="form-group">
-                <mat-form-field>
-                    <mat-label>First name</mat-label>
-                    <input matInput [(ngModel)]="editfirstname" required>
-                </mat-form-field>
-
-                <mat-form-field>
-                    <mat-label>Last name</mat-label>
-                    <input matInput [(ngModel)]="editlastname" required>
-                </mat-form-field>
+                </mat-toolbar-row>
+            </mat-toolbar>
+            <mat-progress-bar [mode]="mode" [color]="color" *ngIf="deleteprogress||applyprogress||matchjobprogress"></mat-progress-bar>
+        </div>
+        <mat-progress-bar [mode]="mode" [color]="color" *ngIf="dashboardprogress"></mat-progress-bar>
+        <!-- <span *ngFor="let item of arrayOne(8); let i = index;">{{i}} </span> -->
+        <div *ngIf="approved" class="not-approved">
+            <mat-card>
+                <mat-card-header>
+                    <p>you're not approved please login after sometime</p>
+                </mat-card-header>
+            <mat-card-content>
+            
+            <button mat-button (click)="logout()">&nbsp;&nbsp;<mat-icon color="primary">input</mat-icon>
+                &nbsp;&nbsp;<b>Log
+                    Out</b></button>
+                
+                </mat-card-content>
+                </mat-card>
+        </div>
+        <div *ngIf="nojobsmatch" class="info">
+            <mat-card><mat-card-header>There are no relavent posts</mat-card-header>
+        </mat-card>
+        </div>
+        <div *ngIf="expression" class="nav-content">
+            <div *ngIf="student" class="recruiterrowjobs">
+                <div *ngFor="let obj of jobdata">
+                    <mat-card class="example-card">
+                        <mat-card-header>
+                            <div class="container">
+                                <div class="float-sm-left">
+                                    <a mat-button color="primary" href="{{obj.CompanyWebsite}}"
+                                        rel="noopener noreferrer" target="_blank">
+                                        <mat-icon>link</mat-icon> {{obj.Company}}
+                                        <button mat-icon-button color="primary" 
+                                        aria-label="Example icon button with a menu icon">
+                                        <mat-icon>work</mat-icon>
+                                    </button>
+                                    </a></div>
+                                <!-- <div class="float-sm-right">
+                                    <button mat-icon-button color="warn" (click)="deletejob(obj.___kp_JobId);"
+                                        aria-label="Example icon button with a menu icon">
+                                        <mat-icon>delete</mat-icon>
+                                    </button>
+                                </div> -->
+                            </div>
+                        </mat-card-header>
+                        <mat-card-content>
+                            <p>
+                                JobId: {{obj.___kp_JobId}}
+                            </p>
+                            <p>Drive date: {{obj.DriveDate}}</p>
+                            <p>
+                                {{obj.Drivedetails}}
+                            </p>
+                        </mat-card-content>
+                        <mat-card-actions>
+                            <button mat-flat-button (click)="applyjob(obj.___kp_JobId)" color="primary">Apply
+                                </button>
+                            <!-- <button mat-flat-button color="primary" style="margin-left: 10px;">View Details</button> -->
+                        </mat-card-actions>
+                    </mat-card>
+                    <mat-divider></mat-divider>
+                </div>
             </div>
-            <div class="form-group">
-                <mat-form-field>
-                    <mat-label>Gender</mat-label>
-                    <mat-select [formControl]="genderControl" [(ngModel)]="editgender" required>
-                        <mat-option>--</mat-option>
-                        <mat-option value="Male">
-                            Male
-                        </mat-option>
-                        <mat-option value="Female">
-                            Female
-                        </mat-option>
-                        <mat-option value="Others">
-                            Others
-                        </mat-option>
-                    </mat-select>
-                    <mat-error *ngIf="genderControl.hasError('required')">Please choose an gender</mat-error>
-                </mat-form-field>
-
-                <mat-form-field class="full-width cursor">
-                    <input type="date" matInput max="12-31-1999" placeholder="Date of birth" [(ngModel)]="editdate"
-                        [formControl]="dateControl" required>
-                    <mat-error *ngIf="dateControl.hasError('required')">Please choose date of birth</mat-error>
-                </mat-form-field>
+            <div *ngIf="recruiter" class="recruiterrowjobs">
+                <div *ngFor="let obj of jobdata">
+                    <mat-card class="example-card">
+                        <mat-card-header>
+                            <div class="container">
+                                <div class="float-sm-left">
+                                    <a mat-button color="primary" href="{{obj.CompanyWebsite}}"
+                                        rel="noopener noreferrer" target="_blank">
+                                        <mat-icon>link</mat-icon> {{obj.Company}}
+                                        <button mat-icon-button color="primary" 
+                                        aria-label="Example icon button with a menu icon">
+                                        <mat-icon>work</mat-icon>
+                                    </button>
+                                    </a></div>
+                                <div class="float-sm-right">
+                                    <button mat-icon-button color="warn" (click)="deletejob(obj.___kp_JobId);"
+                                        aria-label="Example icon button with a menu icon">
+                                        <mat-icon>delete</mat-icon>
+                                    </button>
+                                </div>
+                            </div>
+                        </mat-card-header>
+                        <mat-card-content>
+                            <p>
+                                JobId: {{obj.___kp_JobId}}
+                            </p>
+                            <p>Drive date: {{obj.DriveDate}}</p>
+                            <p>
+                                {{obj.Drivedetails}}
+                            </p>
+                        </mat-card-content>
+                        <mat-card-actions>
+                            <button mat-flat-button (click)="viewapplications(obj.___kp_JobId)" color="primary">View
+                                Applications</button>
+                            <!-- <button mat-flat-button color="primary" style="margin-left: 10px;">View Details</button> -->
+                        </mat-card-actions>
+                    </mat-card>
+                    <mat-divider></mat-divider>
+                </div>
             </div>
-            <mat-action-row>
-                <button mat-button color="primary" (click)="nextStep()">Next</button>
-            </mat-action-row>
-        </mat-expansion-panel>
-        <mat-expansion-panel [expanded]="step === 1" (opened)="setStep(1)" hideToggle>
-            <mat-expansion-panel-header>
-                <mat-panel-title>
-                    Contact info
-                </mat-panel-title>
-                <mat-panel-description>
-                    Type email
-                    <mat-icon>email</mat-icon>
-                </mat-panel-description>
-            </mat-expansion-panel-header>
+        </div>
+        <div *ngIf="updateinfo" class="info">
+            <mat-progress-bar [mode]="mode" [color]="color" *ngIf="updateinfo"></mat-progress-bar>
+            <mat-accordion class="example-headers-align">
+                <mat-expansion-panel [expanded]="step === 0" (opened)="setStep(0)" hideToggle>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Personal data
+                        </mat-panel-title>
+                        <mat-panel-description>
+                            Type your name and dob etc..
+                            <mat-icon>account_circle</mat-icon>
+                        </mat-panel-description>
+                    </mat-expansion-panel-header>
+                    <div class="form-group">
+                        <mat-form-field>
+                            <mat-label>First name</mat-label>
+                            <input matInput [(ngModel)]="editfirstname" required>
+                        </mat-form-field>
 
-            <mat-form-field class="full-width">
-                <mat-label>Email</mat-label>
-                <input matInput placeholder="Email" [formControl]="emailFormControl" [(ngModel)]="editemail" required>
-                <mat-error *ngIf="emailFormControl.hasError('editemail') && !emailFormControl.hasError('required')">
-                    Please enter a valid email address
-                </mat-error>
-                <mat-error *ngIf="emailFormControl.hasError('required')">
-                    Email is <strong>required</strong>
-                </mat-error>
-            </mat-form-field>
+                        <mat-form-field>
+                            <mat-label>Last name</mat-label>
+                            <input matInput [(ngModel)]="editlastname">
+                        </mat-form-field>
+                    </div>
+                    <div class="form-group">
+                        <mat-form-field>
+                            <mat-label>Gender</mat-label>
+                            <mat-select [formControl]="genderControl" [(ngModel)]="editgender" required>
+                                <mat-option>--</mat-option>
+                                <mat-option value="Male">
+                                    Male
+                                </mat-option>
+                                <mat-option value="Female">
+                                    Female
+                                </mat-option>
+                                <mat-option value="Others">
+                                    Others
+                                </mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="genderControl.hasError('required')">Please choose an gender</mat-error>
+                        </mat-form-field>
 
-            <mat-action-row>
-                <button mat-button color="warn" (click)="prevStep()">Previous</button>
-                <button mat-button color="primary" (click)="nextStep()">Next</button>
-            </mat-action-row>
-        </mat-expansion-panel>
-        <mat-expansion-panel [expanded]="step === 2" (opened)="setStep(2)" hideToggle>
-            <mat-expansion-panel-header>
-                <mat-panel-title>
-                    Address
-                </mat-panel-title>
-                <mat-panel-description>
-                    Type the Address
-                    <mat-icon>map</mat-icon>
-                </mat-panel-description>
-            </mat-expansion-panel-header>
-            <div class="form-group">
-                <mat-form-field>
-                    <mat-label>Doorno</mat-label>
-                    <input matInput [(ngModel)]="editDoorno" required>
-                </mat-form-field>
-            </div>
-            <div class="form-group">
-                <mat-form-field>
-                    <mat-label>Streetname</mat-label>
-                    <input matInput [(ngModel)]="editStreetname" required>
-                </mat-form-field>
-                <mat-form-field>
-                    <mat-label>City</mat-label>
-                    <input matInput [(ngModel)]="editCity" required>
-                </mat-form-field>
-            </div>
-            <div class="form-group">
-                <mat-form-field>
-                    <mat-label>State</mat-label>
-                    <input matInput [(ngModel)]="editState" required>
-                </mat-form-field>
-                <mat-form-field>
-                    <mat-label>Postalcode</mat-label>
-                    <input matInput #editpostalCode maxlength="6" placeholder="Postal Code"
-                        [formControl]="postalControl" [(ngModel)]="editPostalcode" required>
-                    <mat-error *ngIf="postalControl.hasError('required')">
-                        Please enter Zipcode
-                    </mat-error>
-                    <mat-hint align="end">{{editpostalCode.value.length}} / 6</mat-hint>
-                </mat-form-field>
-            </div>
-            <mat-action-row>
-                <button mat-button color="warn" (click)="prevStep()">Previous</button>
-                <button mat-button color="primary" (click)="nextStep()">End</button>
-            </mat-action-row>
-        </mat-expansion-panel>
-    </mat-accordion>
+                        <mat-form-field class="cursor">
+                            <input type="date" matInput max="12-31-1999" placeholder="Date of birth"
+                                [(ngModel)]="editdate" [formControl]="dateControl" required>
+                            <mat-error *ngIf="dateControl.hasError('required')">Please choose date of birth</mat-error>
+                        </mat-form-field>
+                    </div>
+                    <mat-action-row>
+                        <button mat-button color="warn" (click)="updatecancel();">Cancel Update</button>
+                        <button mat-button color="primary" (click)="nextStep()">Next</button>
+                    </mat-action-row>
+                </mat-expansion-panel>
+                <mat-expansion-panel [expanded]="step === 1" (opened)="setStep(1)" hideToggle>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Contact info
+                        </mat-panel-title>
+                        <mat-panel-description>
+                            Type email
+                            <mat-icon>email</mat-icon>
+                        </mat-panel-description>
+                    </mat-expansion-panel-header>
 
-</div>
+                    <mat-form-field class="full-width">
+                        <mat-label>Email</mat-label>
+                        <input matInput placeholder="Email" [formControl]="emailFormControl" [(ngModel)]="editemail"
+                            required>
+                        <mat-error
+                            *ngIf="emailFormControl.hasError('editemail') && !emailFormControl.hasError('required')">
+                            Please enter a valid email address
+                        </mat-error>
+                        <mat-error *ngIf="emailFormControl.hasError('required')">
+                            Email is <strong>required</strong>
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-action-row>
+                        <button mat-button color="warn" (click)="updatecancel();">Cancel Update</button>
+                        <button mat-button color="accent" (click)="prevStep()">Previous</button>
+                        <button mat-button color="primary" (click)="nextStep()">Next</button>
+                    </mat-action-row>
+                </mat-expansion-panel>
+                <mat-expansion-panel [expanded]="step === 2" (opened)="setStep(2)" hideToggle>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Address
+                        </mat-panel-title>
+                        <mat-panel-description>
+                            Type the Address
+                            <mat-icon>map</mat-icon>
+                        </mat-panel-description>
+                    </mat-expansion-panel-header>
+                    <div class="form-group">
+                        <mat-form-field>
+                            <mat-label>Doorno</mat-label>
+                            <input matInput [(ngModel)]="editDoorno" required>
+                        </mat-form-field>
+                    </div>
+                    <div class="form-group">
+                        <mat-form-field>
+                            <mat-label>Streetname</mat-label>
+                            <input matInput [(ngModel)]="editStreetname" required>
+                        </mat-form-field>
+                        <mat-form-field>
+                            <mat-label>City</mat-label>
+                            <input matInput [(ngModel)]="editCity" required>
+                        </mat-form-field>
+                    </div>
+                    <div class="form-group">
+                        <mat-form-field>
+                            <mat-label>State</mat-label>
+                            <input matInput [(ngModel)]="editState" required>
+                        </mat-form-field>
+                        <mat-form-field>
+                            <mat-label>Postalcode</mat-label>
+                            <input matInput #editpostalCode maxlength="6" placeholder="Postal Code"
+                                [formControl]="postalControl" [(ngModel)]="editPostalcode" required>
+                            <mat-error *ngIf="postalControl.hasError('required')">
+                                Please enter Zipcode
+                            </mat-error>
+                            <mat-hint align="end">{{editpostalCode.value.length}} / 6</mat-hint>
+                        </mat-form-field>
+                    </div>
+                    <mat-action-row>
+                        <button mat-button color="warn" (click)="updatecancel();">Cancel Update</button>
+                        <button mat-button color="accent" (click)="prevStep()">Previous</button>
+                        <button mat-button color="primary" (click)="nextStep();updatesubmit();">Update</button>
+                    </mat-action-row>
+                </mat-expansion-panel>
+            </mat-accordion>
+        </div>
+        <div class="add-job" *ngIf="addjob">
+            <mat-progress-bar [mode]="mode" [color]="color" *ngIf="addjobprogress"></mat-progress-bar>
+            <mat-card class="example-card">
+                <mat-card-header>
+                    <!-- <div mat-card-avatar class="example-header-image"></div> -->
+                    <mat-card-title>Fill Job Details</mat-card-title>
+                    <!-- <mat-card-subtitle>Dog Breed</mat-card-subtitle> -->
+                </mat-card-header>
+
+                <mat-card-content>
+                    <form>
+                        <mat-form-field class="full-width">
+                            <mat-label>Company Name</mat-label>
+                            <input matInput [(ngModel)]="Company" [formControl]="companyControl" required>
+                            <mat-error *ngIf="companyControl.hasError('required')">Enter company name</mat-error>
+                        </mat-form-field>
+                        <mat-form-field class="full-width cursor">
+                            <input type="date" matInput max="12-31-1999" placeholder="Drive Date"
+                                [(ngModel)]="DriveDate" [formControl]="drivedateControl" required>
+                            <mat-error *ngIf="drivedateControl.hasError('required')">Please choose Drive date
+                            </mat-error>
+                        </mat-form-field>
+                        <mat-form-field class="full-width">
+                            <mat-label>Drive Details</mat-label>
+                            <textarea matInput [(ngModel)]="Drivedetails" [formControl]="drivedetailsControl"
+                                required></textarea>
+                            <mat-error *ngIf="drivedetailsControl.hasError('required')">Enter Drive details</mat-error>
+                        </mat-form-field>
+                        <mat-form-field class="full-width">
+                            <mat-label>Company Website</mat-label>
+                            <input matInput [(ngModel)]="CompanyWebsite" [formControl]="companywebsiteControl" required>
+                            <mat-hint>For better performance copy and paste the link from Browser</mat-hint>
+                            <mat-error *ngIf="companywebsiteControl.hasError('required')">Enter company website
+                            </mat-error>
+                        </mat-form-field>
+                    </form>
+                </mat-card-content>
+                <mat-card-actions>
+                    <button mat-button color="primary" (click)="savejob();">ADD</button>
+                    <button mat-button color="warn" (click)="addjobcancel();">CANCEL</button>
+                </mat-card-actions>
+            </mat-card>
+
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>

@@ -22,13 +22,27 @@ import {MatMenuModule} from '@angular/material/menu';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import { UpdateComponent } from './update/update.component';
 import {MatExpansionModule} from '@angular/material/expansion';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { ApplicationsComponent } from './applications/applications.component';
+import {MatTableModule} from '@angular/material/table';
+import {MatSidenavModule} from '@angular/material/sidenav';
+import {MatRadioModule} from '@angular/material/radio';
+import {MatDialogModule} from '@angular/material/dialog';
+import { AppliedjobsComponent } from './appliedjobs/appliedjobs.component';
+import {MatDividerModule, MatDivider} from '@angular/material/divider';
+import {MatChipsModule} from '@angular/material/chips';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
+
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginRegisterComponent,
     DashboardComponent,
-    UpdateComponent
+    UpdateComponent,
+    ApplicationsComponent,
+    AppliedjobsComponent
   ],
   imports: [
     BrowserModule,
@@ -52,11 +66,22 @@ import {MatExpansionModule} from '@angular/material/expansion';
     MatMenuModule,
     MatSnackBarModule,
     MatExpansionModule,
+    MatProgressBarModule,
+    MatProgressSpinnerModule,
+    MatTableModule,
+    MatSidenavModule,
+    MatRadioModule,
+    MatDialogModule,
+    MatDividerModule,
+    MatChipsModule,
+    MatAutocompleteModule,
     // MaterialModue,
     RouterModule.forRoot([
       { path: '', component: LoginRegisterComponent },
       { path: 'profile', component: DashboardComponent ,resolve:[AuthGuard]},
-      { path: 'update', component: UpdateComponent ,resolve:[AuthGuard]}
+      { path: 'update', component: UpdateComponent ,resolve:[AuthGuard]},
+      { path: 'applications' ,  component: ApplicationsComponent ,resolve:[AuthGuard]},
+      { path: 'appliedjobs' ,  component: AppliedjobsComponent ,resolve:[AuthGuard]}
     ]),
     
   ],

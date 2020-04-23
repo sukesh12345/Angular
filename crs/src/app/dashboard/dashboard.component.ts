@@ -1,12 +1,16 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild, ElementRef } from '@angular/core';
 import { ApiService } from '../services/api.service';
 import { Router } from '@angular/router';
 import { userinfo, jobdata } from '../interface/interface';
 import { FormControl, Validators, NgForm } from '@angular/forms';
 import { gender } from '../interface/interface';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { toUnicode } from 'punycode';
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
+import { MatAutocompleteSelectedEvent, MatAutocomplete } from '@angular/material/autocomplete';
+import { MatChipInputEvent } from '@angular/material/chips';
+import { Observable } from 'rxjs';
+import { map, startWith } from 'rxjs/operators';
+
 
 @Component({
   selector: 'app-dashboard',
@@ -14,6 +18,24 @@ import { toUnicode } from 'punycode';
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
+
+  visible = true;
+  selectable = true;
+  removable = true;
+  addOnBlur = true;
+  separatorKeysCodes: number[] = [ENTER, COMMA];
+  skillcontrol = new FormControl('', [Validators.required]);
+  filteredskills: Observable<string[]>;
+  skills: string[] = [];
+  allskills: string[] = [];
+
+  @ViewChild('skillinput', { static: false }) skillinput: ElementRef<HTMLInputElement>;
+  @ViewChild('auto', { static: false }) matAutocomplete: MatAutocomplete;
+  skillvalue: any;
+  te: any = [{}];
+
+  selectedChips: any[] = [];
+
   id: any;
   gender: gender
   userinfo: userinfo;
@@ -37,12 +59,12 @@ export class DashboardComponent implements OnInit {
   student: any;
   jobdata: jobdata;
   load: any;
-  i: any;
   options: FormGroup;
   addjob: any;
   addjobtoggle: any;
   viewjobstoggle: any;
   updateinfotoggle: any;
+  addskillstoggle: any;
   Company: any;
   DriveDate: any;
   Drivedetails: any;
@@ -56,12 +78,18 @@ export class DashboardComponent implements OnInit {
   approved: any;
   matchjobprogress: any;
   nojobsmatch: any;
+  skillstack: string[] = [];
+  nopostedjobs:any;
+  noskillsadded : any;
 
-  constructor(private ApiService: ApiService, private router: Router, fb: FormBuilder, public dialog: MatDialog) {
-
+  constructor(private ApiService: ApiService, private router: Router) {
+    this.filteredskills = this.skillcontrol.valueChanges.pipe(
+      startWith(null),
+      map((skill: string | null) => skill ? this._filter(skill) : this.allskills.slice()));
   }
 
   ngOnInit() {
+    this.addskillstoggle = false;
     this.dashboardprogress = true;
     this.applyprogress = false;
     this.addjob = false;
@@ -81,6 +109,18 @@ export class DashboardComponent implements OnInit {
     this.approved = false;
     this.nojobsmatch = false;
     this.id = localStorage.getItem('id');
+    this.nopostedjobs=false;
+    this.noskillsadded = false;
+
+    this.ApiService.getskills()
+      .subscribe(
+        data => {
+          this.allskills = data.data;
+        }
+      )
+
+
+
     this.ApiService.getuser()
       .subscribe
       (
@@ -95,13 +135,24 @@ export class DashboardComponent implements OnInit {
           }
           this.expression = true;
           if (this.userinfo.Type[0] == "Student") {
+            this.addskillstoggle = true;
             this.student = true;
+            this.ApiService.getsrelatedkills()
+              .subscribe(
+                data => {
+                  this.noskillsadded = false;
+                  this.skillstack = data.data;
+                },
+                error=>{
+                  this.noskillsadded = true;
+                }
+              )
             this.updateinfotoggle = true;
             this.appliedjobstoggle = true;
             this.viewmatchingjobs();
           }
           else {
-            this.i = 0;
+            // this.i = 0;
             this.getpostedjobs();
             this.recruiter = true;
             this.addjobtoggle = true;
@@ -114,6 +165,7 @@ export class DashboardComponent implements OnInit {
           }, 5000);
         }
       )
+
   }
   drivedateControl = new FormControl('', [Validators.required]);
   companyControl = new FormControl('', [Validators.required]);
@@ -242,21 +294,27 @@ export class DashboardComponent implements OnInit {
       .subscribe(
         data => {
           this.jobdata = data.data;
+          this.nopostedjobs=false;
+          this.recruiter=true;
           //this.arrayOne(data.count);
         },
         error => {
           console.log(error.error);
+          this.nopostedjobs=true;
+          this.recruiter = false;
         }
       )
   }
+  
   viewmatchingjobs() {
     this.matchjobprogress = true;
     this.viewmatchingjobstoggle = false;
     this.updateinfotoggle = true;
     this.updateinfo = false;
+    this.nojobsmatch = false;
     this.ApiService.getmatchingjobs()
       .subscribe(
-        data => { 
+        data => {
           console.log(data.data);
           if (data.data[0] == 'There are no matched jobs') {
             this.nojobsmatch = true;
@@ -266,13 +324,14 @@ export class DashboardComponent implements OnInit {
             this.expression = true;
             // console.log(data.data);
             this.jobdata = data.data;
-            
             this.student = true;
+            this.nojobsmatch = false;
           }
           this.matchjobprogress = false;
         },
         error => {
           console.log("here" + error);
+          this.student=false;
         }
       )
   }
@@ -280,6 +339,8 @@ export class DashboardComponent implements OnInit {
     localStorage.setItem('jobid', jobid[0]);
     this.router.navigate(['applications']);
   }
+
+
   addnewjob() {
     this.addjob = true;
     this.addjobtoggle = false;
@@ -287,12 +348,16 @@ export class DashboardComponent implements OnInit {
     this.expression = false;
     this.viewjobstoggle = true;
     this.updateinfotoggle = true;
+    this.color = "primary";
+    this.skills=[];
   }
   addjobcancel() {
     this.addjobtoggle = true;
     this.addjob = false;
     this.expression = true;
     this.viewjobstoggle = false;
+    this.color = "primary";
+    this.skills=[];
   }
   viewjoblist() {
     this.recruiter = true;
@@ -305,11 +370,13 @@ export class DashboardComponent implements OnInit {
   }
   savejob() {
     this.addjobprogress = true;
+    console.log(this.skills);
     let addjobpayload = {
       "Company": this.Company,
       "DriveDate": this.DriveDate,
       "Drivedetails": this.Drivedetails,
-      "CompanyWebsite": this.CompanyWebsite
+      "CompanyWebsite": this.CompanyWebsite,
+      "array":this.skills
     }
     this.ApiService.addjob(addjobpayload)
       .subscribe(
@@ -323,6 +390,7 @@ export class DashboardComponent implements OnInit {
           this.Drivedetails = null;
           this.CompanyWebsite = null;
           this.addjobprogress = false;
+          this.skills=[];
           this.ngOnInit();
         },
         error => {
@@ -363,4 +431,53 @@ export class DashboardComponent implements OnInit {
         }
       )
   }
+
+
+
+  add(event: MatChipInputEvent): void {
+    if (!this.matAutocomplete.isOpen) {
+      const input = event.input;
+      const value = event.value;
+      if ((value || '').trim()) {
+        this.skills.push(value.trim());
+      }
+      if (input) {
+        input.value = '';
+      }
+
+      this.skillcontrol.setValue(null);
+    }
+  }
+
+  remove(skill: string): void {
+    const index = this.skills.indexOf(skill);
+    if (index >= 0) {
+      this.skills.splice(index, 1);
+    }
+    console.log(this.skills);
+  }
+
+  selected(event: MatAutocompleteSelectedEvent): void {
+    this.skills.push(event.option.viewValue);
+    this.skillinput.nativeElement.value = '';
+    this.skillcontrol.setValue(null);
+  }
+
+  private _filter(value: string): string[] {
+    const filterValue = value.toLowerCase();
+
+    return this.allskills.filter(skill => skill.toLowerCase().indexOf(filterValue) === 0);
+  }
+  changeSelected(parameter: string, query: string) {
+
+    const index = this.selectedChips.indexOf(query);
+    if (index >= 0) {
+      this.selectedChips.splice(index, 1);
+    } else {
+      this.selectedChips.push(query);
+    }
+    console.log('this.selectedChips: ' + this.selectedChips);
+  }
+
+
 }

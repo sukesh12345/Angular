@@ -9,48 +9,14 @@ import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 
 
+
 @Component({
   selector: 'app-login-register',
   templateUrl: './login-register.component.html',
   styleUrls: ['./login-register.component.scss']
 })
 export class LoginRegisterComponent implements OnInit {
-  states: string[] = ["Andhra Pradesh",
-    "Arunachal Pradesh",
-    "Assam",
-    "Bihar",
-    "Chhattisgarh",
-    "Goa",
-    "Gujarat",
-    "Haryana",
-    "Himachal Pradesh",
-    "Jammu and Kashmir",
-    "Jharkhand",
-    "Karnataka",
-    "Kerala",
-    "Madhya Pradesh",
-    "Maharashtra",
-    "Manipur",
-    "Meghalaya",
-    "Mizoram",
-    "Nagaland",
-    "Odisha",
-    "Punjab",
-    "Rajasthan",
-    "Sikkim",
-    "Tamil Nadu",
-    "Telangana",
-    "Tripura",
-    "Uttarakhand",
-    "Uttar Pradesh",
-    "West Bengal",
-    "Andaman and Nicobar Islands",
-    "Chandigarh",
-    "Dadra and Nagar Haveli",
-    "Daman and Diu",
-    "Delhi",
-    "Lakshadweep",
-    "Puducherry"]
+  states:string[]=[];
   password: any;
   usertype: any;
   firstname: any;
@@ -75,6 +41,7 @@ export class LoginRegisterComponent implements OnInit {
   loginprogress: any;
   durationInSeconds = 5;
   color: any;
+  phonenumbernotavailiable;
 
   constructor(private ApiService: ApiService, private router: Router, private _snackBar: MatSnackBar) {
   }
@@ -82,6 +49,17 @@ export class LoginRegisterComponent implements OnInit {
   ngOnInit(): void {
     this.loginprogress = false;
     this.loginsuccess = false;
+    this.phonenumbernotavailiable = false;
+    this.getstatesname();
+  }
+  getstatesname(){
+    this.ApiService.getstatesname()
+    .subscribe(
+      data=>{
+        this.states=data.data;
+        // console.log(this.states);
+      }
+    )
     this.filteredstates = this.stateControl.valueChanges.pipe(
       startWith(''),
       map(value =>this._filter(value))
@@ -169,6 +147,7 @@ export class LoginRegisterComponent implements OnInit {
       return false;
   }
   register() {
+    
     let registerpayload = {
       "type": this.usertypeControl.value.name,
       "firstname": this.firstname,
@@ -206,8 +185,12 @@ export class LoginRegisterComponent implements OnInit {
         },
         error => {
           console.log(error)
+          this.phonenumbernotavailiable = true;
         }
       )
+  }
+  registererrormessageclear(){
+    this.phonenumbernotavailiable=false;
   }
   login() {
     this.loginprogress = true;
@@ -249,3 +232,4 @@ export interface data {
   messsage: string;
   status: any;
 }
+

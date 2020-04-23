@@ -1,0 +1,57 @@
+<mat-progress-bar mode="indeterminate" [color]="color" *ngIf="skilladdprogress"></mat-progress-bar>
+
+<a mat-button color="primary" style="position: absolute;" routerLink="/profile"><span class="material-icons">
+        keyboard_backspace
+    </span>Go Back to Profile</a>
+<br>
+
+<div class="container">
+    <div>
+        <!-- <mat-chip *ngFor="let skill of skills" [selectable]="selectable" [removable]="removable" (removed)="remove(skill)"
+        name="skillvalue">
+        {{skill}}
+        <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+    </mat-chip> -->
+
+        <mat-form-field class="mat-chi">
+            <mat-label>Add Skill :</mat-label>
+            <mat-chip-list #chipList aria-label="skill selection">
+
+                <input placeholder="Add Skill..." #skillInput [(ngModel)]="skillvalue" [formControl]="addskillcontrol"
+                    [matAutocomplete]="auto" [matChipInputFor]="chipList"
+                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="addOnBlur"
+                    (matChipInputTokenEnd)="add($event)" style="padding-left: 70px;">
+
+            </mat-chip-list>
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+                <mat-option *ngFor="let skill of filteredskills | async" [value]="skill" class="mat-chi-list">
+                    {{skill}}
+                </mat-option>
+            </mat-autocomplete>
+            <mat-hint>**Skills will be saved Automatically on selecting</mat-hint>
+        </mat-form-field>
+
+    </div>
+    <br>
+    <br>
+    <br>
+    <br>
+    <div class="skill-chip">
+        <h4 style="position: fixed;">Skills added</h4>
+        <br>
+        <p>
+            <mat-hint style="font-size: smaller;">**Click on </mat-hint>
+            <mat-icon style="transform: scale(0.75);align-content: center;font-size: 14px;padding-right: 0px;">cancel</mat-icon>
+            <mat-hint>to remove the skill</mat-hint>
+        </p>
+        <mat-chip-list #chipList aria-label="skill chips">
+            <mat-chip *ngFor="let skill of skillstack" [removable]="removable" (removed)="remove(skill)">
+                {{skill}}
+                <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+            </mat-chip>
+        </mat-chip-list>
+    </div>
+</div>
+<!-- Copyright 2019 Google LLC. All Rights Reserved.
+        Use of this source code is governed by an MIT-style license that
+        can be found in the LICENSE file at http://angular.io/license -->

@@ -7,20 +7,29 @@
                 &nbsp;&nbsp;<mat-icon color="primary">work</mat-icon>&nbsp;&nbsp;View Posted Jobs
             </button></p>
         <p>
-            <button mat-menu-item (click)="sidenav.toggle();viewmatchingjobs();" *ngIf="viewmatchingjobstoggle">&nbsp;&nbsp;<mat-icon
-                    color="primary">
+            <button mat-menu-item (click)="sidenav.toggle();viewmatchingjobs();"
+                *ngIf="viewmatchingjobstoggle">&nbsp;&nbsp;<mat-icon color="primary">
                     equalizer</mat-icon>&nbsp;&nbsp;<b>View matching Jobs</b>&nbsp;</button></p>
+        <!-- <p> <button mat-menu-item (click)="sidenav.toggle();viewalljobs();" *ngIf="viewalljobstoggle">
+                &nbsp;&nbsp;<mat-icon color="primary">work</mat-icon>&nbsp;&nbsp;<b>View All Jobs</b>
+            </button></p> -->
         <p> <button mat-menu-item (click)="sidenav.toggle();appliedjobs();" *ngIf="appliedjobstoggle">
                 &nbsp;&nbsp;<mat-icon color="primary">work</mat-icon>&nbsp;&nbsp;<b>View Applied Jobs</b>
             </button></p>
         <p> <button mat-menu-item (click)="sidenav.toggle();update();" *ngIf="updateinfotoggle">
                 &nbsp;&nbsp;<mat-icon color="primary">account_box</mat-icon>&nbsp;&nbsp;<b>Update Profile</b>
             </button></p>
+        <p> <button mat-menu-item (click)="sidenav.toggle();" routerLink="/addskills" *ngIf="addskillstoggle">
+                &nbsp;&nbsp;<mat-icon color="primary">library_add</mat-icon>&nbsp;&nbsp;<b>Add/Delete Skills</b>
+            </button></p>
         <p>
             <button mat-menu-item (click)="sidenav.toggle();addnewjob();" *ngIf="addjobtoggle">&nbsp;&nbsp;<mat-icon
                     color="primary">
                     add_box</mat-icon>&nbsp;&nbsp;<b>Add
                     New</b>&nbsp;</button></p>
+        <p>
+            <button mat-menu-item>&nbsp;&nbsp;<mat-icon color="primary">report_problem</mat-icon>
+                &nbsp;&nbsp;<b>Report an issue</b></button></p>
         <p>
             <button mat-menu-item (click)="logout()">&nbsp;&nbsp;<mat-icon color="primary">input</mat-icon>
                 &nbsp;&nbsp;<b>Log
@@ -29,7 +38,7 @@
 
     <mat-sidenav-content>
         <div class="fixed-toolbar">
-            <mat-toolbar color="primary" *ngIf="recruiter||student||addjob||updateinfo||nojobsmatch">
+            <mat-toolbar color="primary" *ngIf="recruiter||student||addjob||updateinfo||nojobsmatch||nopostedjobs||noskillsadded">
                 <mat-toolbar-row>
 
                     <button mat-button *ngIf="load" (click)="sidenav.toggle()"> <span class="material-icons">
@@ -41,13 +50,14 @@
                     </mat-menu>
                     <span class="spacer"></span>
                     <!-- <mat-icon class="example-icon" aria-hidden="false" aria-label="Example heart icon">favorite</mat-icon> -->
-                    <span class="space">About</span>
+                    <!-- <span class="space">About</span>
                     <span class="cursor">Contact Us</span>
-                    <span class="space"></span>
+                    <span class="space"></span> -->
 
                 </mat-toolbar-row>
             </mat-toolbar>
-            <mat-progress-bar [mode]="mode" [color]="color" *ngIf="deleteprogress||applyprogress||matchjobprogress"></mat-progress-bar>
+            <mat-progress-bar [mode]="mode" [color]="color" *ngIf="deleteprogress||applyprogress||matchjobprogress">
+            </mat-progress-bar>
         </div>
         <mat-progress-bar [mode]="mode" [color]="color" *ngIf="dashboardprogress"></mat-progress-bar>
         <!-- <span *ngFor="let item of arrayOne(8); let i = index;">{{i}} </span> -->
@@ -56,33 +66,58 @@
                 <mat-card-header>
                     <p>you're not approved please login after sometime</p>
                 </mat-card-header>
-            <mat-card-content>
-            
-            <button mat-button (click)="logout()">&nbsp;&nbsp;<mat-icon color="primary">input</mat-icon>
-                &nbsp;&nbsp;<b>Log
-                    Out</b></button>
-                
+                <mat-card-content>
+
+                    <button mat-button (click)="logout()">&nbsp;&nbsp;<mat-icon color="primary">input</mat-icon>
+                        &nbsp;&nbsp;<b>Log
+                            Out</b></button>
+
                 </mat-card-content>
-                </mat-card>
+            </mat-card>
         </div>
-        <div *ngIf="nojobsmatch" class="info">
-            <mat-card><mat-card-header>There are no relavent posts</mat-card-header>
-        </mat-card>
+        <div *ngIf="nojobsmatch" class="info" style="width: 58%;">
+
+            <mat-card>
+                <mat-card-header>There are no relavent posts</mat-card-header>
+            </mat-card>
         </div>
+        <div class="rowjobs">
+            <br>
+            <br>
+            <mat-card *ngIf="noskillsadded">
+                <mat-card-header><p>You haven't added any skills........
+                    <a mat-button style="padding-left: 0px;" color="primary" routerLink="/addskills" >
+                       Add Skills
+                    </a></p>
+                </mat-card-header>
+            </mat-card>
+            </div>
         <div *ngIf="expression" class="nav-content">
-            <div *ngIf="student" class="recruiterrowjobs">
-                <div *ngFor="let obj of jobdata">
-                    <mat-card class="example-card">
+            
+            <div *ngIf="student||!noskillsadded" class="rowjobs">
+                
+                <div class="skill-chip" *ngIf="!noskillsadded">
+                    <h4 style="position:fixed;">Skills added:</h4>
+                    <br>
+                    <br>
+                    <mat-chip-list #chipList aria-label="skill chips">
+                        <mat-chip *ngFor="let skill of skillstack">
+                            {{skill}}
+                        </mat-chip>
+                    </mat-chip-list>
+                </div>
+                <div *ngFor="let obj of jobdata" >
+                    <mat-card class="example-card" *ngIf="!nojobsmatch">
                         <mat-card-header>
                             <div class="container">
                                 <div class="float-sm-left">
                                     <a mat-button color="primary" href="{{obj.CompanyWebsite}}"
                                         rel="noopener noreferrer" target="_blank">
                                         <mat-icon>link</mat-icon> {{obj.Company}}
-                                        <button mat-icon-button color="primary" 
-                                        aria-label="Example icon button with a menu icon">
-                                        <mat-icon>work</mat-icon>
-                                    </button>
+                                        <button mat-icon-button color="primary"
+                                            aria-label="Example icon button with a menu icon">
+                                            <mat-icon>work</mat-icon>
+                                        </button>
                                     </a></div>
                                 <!-- <div class="float-sm-right">
                                     <button mat-icon-button color="warn" (click)="deletejob(obj.___kp_JobId);"
@@ -103,12 +138,15 @@
                         </mat-card-content>
                         <mat-card-actions>
                             <button mat-flat-button (click)="applyjob(obj.___kp_JobId)" color="primary">Apply
-                                </button>
+                            </button>
                             <!-- <button mat-flat-button color="primary" style="margin-left: 10px;">View Details</button> -->
                         </mat-card-actions>
                     </mat-card>
                     <mat-divider></mat-divider>
                 </div>
+            </div>
+            <div *ngIf="nopostedjobs" class="recruiterrowjobs">
+                <h4>You haven't posted any jobs yet!!!</h4>
             </div>
             <div *ngIf="recruiter" class="recruiterrowjobs">
                 <div *ngFor="let obj of jobdata">
@@ -119,10 +157,10 @@
                                     <a mat-button color="primary" href="{{obj.CompanyWebsite}}"
                                         rel="noopener noreferrer" target="_blank">
                                         <mat-icon>link</mat-icon> {{obj.Company}}
-                                        <button mat-icon-button color="primary" 
-                                        aria-label="Example icon button with a menu icon">
-                                        <mat-icon>work</mat-icon>
-                                    </button>
+                                        <button mat-icon-button color="primary"
+                                            aria-label="Example icon button with a menu icon">
+                                            <mat-icon>work</mat-icon>
+                                        </button>
                                     </a></div>
                                 <div class="float-sm-right">
                                     <button mat-icon-button color="warn" (click)="deletejob(obj.___kp_JobId);"
@@ -318,6 +356,38 @@
                             <mat-error *ngIf="companywebsiteControl.hasError('required')">Enter company website
                             </mat-error>
                         </mat-form-field>
+                        <!-- <mat-form-field class="full-width">
+                            <mat-label>Add Skill :</mat-label>
+                            <mat-chip-list #chipList aria-label="skill selection">
+                                <input placeholder="Add Skill..." #skillInput [(ngModel)]="skillvalue" [formControl]="addskillcontrol"
+                                    [matAutocomplete]="auto" [matChipInputFor]="chipList"
+                                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="addOnBlur"
+                                    (matChipInputTokenEnd)="add($event)">
+                            </mat-chip-list>
+                            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+                                <mat-option *ngFor="let skill of filteredskills | async" [value]="skill" class="mat-chi-list">
+                                    {{skill}}
+                                </mat-option>
+                            </mat-autocomplete>
+                            <mat-hint>**Skills will be saved Automatically on selecting</mat-hint>
+                        </mat-form-field> -->
+                        <mat-form-field class="full-width">
+                            <mat-label>Add Requirement</mat-label>
+                            <mat-chip-list #chipList aria-label="skill selection">
+
+                                <input matInput placeholder="Type C,Cplusplus etc...." #skillinput
+                                    [(ngModel)]="skillvalue" [formControl]="skillcontrol" [matAutocomplete]="auto"
+                                    [matChipInputFor]="chipList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                    [matChipInputAddOnBlur]="addOnBlur" (matChipInputTokenEnd)="add($event)" required>
+                            </mat-chip-list>
+                            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+                                <mat-option *ngFor="let skill of filteredskills| async" [value]="skill"
+                                    class="mat-chi-list">
+                                    {{skill}}
+                                </mat-option>
+                            </mat-autocomplete>
+
+                        </mat-form-field>
                     </form>
                 </mat-card-content>
                 <mat-card-actions>
@@ -325,7 +395,14 @@
                     <button mat-button color="warn" (click)="addjobcancel();">CANCEL</button>
                 </mat-card-actions>
             </mat-card>
-
+            <div class="skill-chip">
+                <h6>Added Requirement:</h6>
+                <mat-chip *ngFor="let skill of skills" [selectable]="selectable" [removable]="removable"
+                    (removed)="remove(skill)" name="skillvalue">
+                    {{skill}}
+                    <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                </mat-chip>
+            </div>
         </div>
     </mat-sidenav-content>
 </mat-sidenav-container>

@@ -1,25 +1,25 @@
 <div class="fixed-toolbar">
-<mat-toolbar color="primary">
-    <mat-toolbar-row>
-        <span>CRS</span><span class="material-icons">
-            account_circle
-        </span>
+    <mat-toolbar color="primary">
+        <mat-toolbar-row>
+            <span>CRS</span><span class="material-icons">
+                account_circle
+            </span>
 
-        <span class="spacer"></span>
-        <!-- <mat-icon class="example-icon" aria-hidden="false" aria-label="Example heart icon">favorite</mat-icon> -->
-        <span class="space">About</span>
-        <span class="cursor">Contact Us</span>
-    </mat-toolbar-row>
+            <span class="spacer"></span>
+            <!-- <mat-icon class="example-icon" aria-hidden="false" aria-label="Example heart icon">favorite</mat-icon> -->
+            <span class="space">About</span>
+            <span class="cursor">Contact Us</span>
+        </mat-toolbar-row>
 
 
-</mat-toolbar>
+    </mat-toolbar>
 </div>
+
 <div class="login-progress-bar">
-<mat-progress-bar mode="indeterminate" [color]="color" *ngIf="loginprogress"></mat-progress-bar>
+    <mat-progress-bar mode="indeterminate" [color]="color" *ngIf="loginprogress"></mat-progress-bar>
 </div>
 <br>
 <br>
-
 <div class="align-center card">
     <mat-tab-group animationDuration="0ms">
         <mat-tab label="Login">
@@ -56,7 +56,8 @@
                 <div class="example-container">
                     <mat-form-field>
                         <mat-label>Usertype</mat-label>
-                        <mat-select [formControl]="usertypeControl" [(ngModel)]="usertype" required>
+                        <mat-select [formControl]="usertypeControl" (click)="registererrormessageclear();"
+                            [(ngModel)]="usertype" required>
                             <mat-option>--</mat-option>
                             <mat-option *ngFor="let usertype of types" [value]="usertype">
                                 {{usertype.name}}
@@ -65,17 +66,17 @@
                         <mat-error *ngIf="usertypeControl.hasError('required')">Please choose Usertype</mat-error>
                     </mat-form-field>
                     <div class="full-width form-group">
-                    <mat-form-field class="full-width">
-                        <input matInput placeholder="First name" [formControl]="firstnameControl"
-                            [(ngModel)]="firstname" required>
-                        <mat-error *ngIf="firstnameControl.hasError('required')">
-                            Please enter a Firstname
-                        </mat-error>
-                    </mat-form-field>
-                    <mat-form-field class="full-width">
-                        <input matInput placeholder="Last Name" [(ngModel)]="lastname" name="lastname">
-                    </mat-form-field>
-                </div>
+                        <mat-form-field class="full-width">
+                            <input matInput placeholder="First name" [formControl]="firstnameControl"
+                                [(ngModel)]="firstname" (click)="registererrormessageclear();" required>
+                            <mat-error *ngIf="firstnameControl.hasError('required')">
+                                Please enter a Firstname
+                            </mat-error>
+                        </mat-form-field>
+                        <mat-form-field class="full-width">
+                            <input matInput placeholder="Last Name" [(ngModel)]="lastname" name="lastname">
+                        </mat-form-field>
+                    </div>
                     <mat-form-field>
                         <mat-label>Gender</mat-label>
                         <mat-select [formControl]="genderControl" [(ngModel)]="gender" required>
@@ -110,7 +111,7 @@
                         <span matPrefix>+91 &nbsp;</span>
                         <input matInput class="telephone" minlength="10" maxlength="10" placeholder="Telephone"
                             onclick="restrictAlphabets(event)" #telephon [formControl]="telephoneControl"
-                            [(ngModel)]="telephone" required>
+                            [(ngModel)]="telephone" (keypress)="registererrormessageclear();" required>
                         <mat-error
                             *ngIf="telephoneControl.hasError('pattern') && !telephoneControl.hasError('required')">
                             Please enter a valid phone number
@@ -148,7 +149,7 @@
                     <mat-form-field class="full-width">
                         <mat-label>Door no.</mat-label>
                         <input matInput placeholder="Door no  Ex:1-123" #line1 [formControl]="address1Control"
-                        [(ngModel)]="address1" required required>
+                            [(ngModel)]="address1" required required>
                         <mat-error *ngIf="address1Control.hasError('required')">
                             Please enter door no.
                         </mat-error>
@@ -168,7 +169,8 @@
                         </mat-error>
                     </mat-form-field>
                     <mat-form-field class="full-width">
-                        <input matInput placeholder="State" [formControl]="stateControl" [matAutocomplete]="auto" [(ngModel)]="state" required>
+                        <input matInput placeholder="State" [formControl]="stateControl" [matAutocomplete]="auto"
+                            [(ngModel)]="state" (click)="getstatesname();" required>
                         <mat-autocomplete #auto="matAutocomplete">
                             <mat-option *ngFor="let state of filteredstates | async" [value]="state">
                                 {{state}}
@@ -177,6 +179,7 @@
                         <mat-error *ngIf="stateControl.hasError('required')">
                             Please enter state
                         </mat-error>
+                        <mat-hint>Select from list*</mat-hint>
                     </mat-form-field>
 
                     <mat-form-field class="full-width">
@@ -186,8 +189,9 @@
                             Please enter Zipcode
                         </mat-error>
                         <mat-hint align="end">{{postalCode.value.length}} / 6</mat-hint>
+                       
                     </mat-form-field>
-
+                    <mat-error *ngIf="phonenumbernotavailiable">This phone number is already taken</mat-error>
                     <button type="submit" (click)="register();" mat-raised-button color="primary">Register</button>
                 </div>
             </form>

@@ -33,6 +33,8 @@ import { AppliedjobsComponent } from './appliedjobs/appliedjobs.component';
 import {MatDividerModule, MatDivider} from '@angular/material/divider';
 import {MatChipsModule} from '@angular/material/chips';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import { AddSkillsComponent } from './add-skills/add-skills.component';
+
 
 
 @NgModule({
@@ -42,7 +44,8 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
     DashboardComponent,
     UpdateComponent,
     ApplicationsComponent,
-    AppliedjobsComponent
+    AppliedjobsComponent,
+    AddSkillsComponent
   ],
   imports: [
     BrowserModule,
@@ -81,7 +84,8 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
       { path: 'profile', component: DashboardComponent ,resolve:[AuthGuard]},
       { path: 'update', component: UpdateComponent ,resolve:[AuthGuard]},
       { path: 'applications' ,  component: ApplicationsComponent ,resolve:[AuthGuard]},
-      { path: 'appliedjobs' ,  component: AppliedjobsComponent ,resolve:[AuthGuard]}
+      { path: 'appliedjobs' ,  component: AppliedjobsComponent ,resolve:[AuthGuard]},
+      { path: 'addskills' ,  component: AddSkillsComponent ,resolve:[AuthGuard]}
     ]),
     
   ],

@@ -76,7 +76,7 @@ export class ApiService {
       'Authorization':localStorage.getItem('token')
     });
     this.id = localStorage.getItem('id');
-    return this.httpclient.get("http://localhost/crs/public/crsapi.php/api/users/" + this.id +"/matchingjobs/", { headers: httpHeaders });
+    return this.httpclient.post("http://localhost/crs/public/crsapi.php/api/users/" + this.id +"/matchingjobs/", { headers: httpHeaders });
   }
   applyjob(jobid):Observable<any>{
     const httpHeaders = new HttpHeaders({
@@ -85,4 +85,29 @@ export class ApiService {
     this.id = localStorage.getItem('id');
     return this.httpclient.post("http://localhost/crs/public/crsapi.php/api/users/" + this.id +"/matchingjobs/applyjob/"+jobid, { headers: httpHeaders });
   }
+  getstatesname():Observable<any>{
+    return this.httpclient.get("http://localhost/crs/public/crsapi.php/statesname");
+  }
+  getsrelatedkills():Observable<any>{
+    this.id = localStorage.getItem('id');
+    return this.httpclient.get("http://localhost/crs/public/crsapi.php/api/users/"+this.id+"/skills");
+  }
+  getskills():Observable<any>{
+    return this.httpclient.get("http://localhost/crs/public/crsapi.php/allskills");
+  }
+
+  addskill(skillpayload):Observable<any>{
+    this.id = localStorage.getItem('id');
+   
+    return this.httpclient.post("http://localhost/crs/public/crsapi.php/api/users/"+this.id+"/addskill",skillpayload);
+  }
+  removeskill(skill):Observable<any>{
+    this.id = localStorage.getItem('id');
+    return this.httpclient.delete("http://localhost/crs/public/crsapi.php/api/users/"+this.id+"/removeskill"+skill);
+  }
+
+  // addjobrequirement(tags):Observable<any>{
+  //   this.id = localStorage.getItem('id');
+  //   return this.httpclient.get("http://localhost/crs/public/crsapi.php/api/users/"+this.id+"/addjobrequirements/"+tags);
+  // }
 }

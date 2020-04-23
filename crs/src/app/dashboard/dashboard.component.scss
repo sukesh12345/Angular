@@ -18,14 +18,15 @@
 }
 .rowjobs{
   position: absolute;
-  left: 20%;
-  right: 20%;
+  padding-top:18px;
+  left: 21%;
+  right: 21%;
 }
 .recruiterrowjobs{
   position: absolute;
   padding-top:18px;
-  left: 20%;
-  right: 20%;
+  left: 21%;
+  right: 21%;
 }
 
 
@@ -78,9 +79,9 @@
 }
 .add-job{
   position: absolute;
-  top:20%;
-  left: 30%;
-  right: 30%;
+  top:10%;
+  left: 25%;
+  right: 25%;
 }
 .full-width{
   width: 100%;
@@ -101,4 +102,16 @@
   right: 30%;
   left:30%;
   width: 40%;
+}
+.skill-chip{
+  position: fixed;
+  // padding-top:30px;
+  top:11%;
+  width: 20%;
+  right: 0.5%;
+  left: 79.5%;
+  border-left: 1px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scroll-padding-right: 10px;
 }

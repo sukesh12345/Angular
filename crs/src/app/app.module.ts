@@ -34,6 +34,9 @@ import {MatDividerModule, MatDivider} from '@angular/material/divider';
 import {MatChipsModule} from '@angular/material/chips';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import { AddSkillsComponent } from './add-skills/add-skills.component';
+import { SelectedStudentsComponent } from './selected-students/selected-students.component';
+import { SelectedJobsComponent } from './selected-jobs/selected-jobs.component';
+import { AboutComponent } from './about/about.component';
 
 
 
@@ -45,7 +48,10 @@ import { AddSkillsComponent } from './add-skills/add-skills.component';
     UpdateComponent,
     ApplicationsComponent,
     AppliedjobsComponent,
-    AddSkillsComponent
+    AddSkillsComponent,
+    SelectedStudentsComponent,
+    SelectedJobsComponent,
+    AboutComponent
   ],
   imports: [
     BrowserModule,
@@ -85,7 +91,10 @@ import { AddSkillsComponent } from './add-skills/add-skills.component';
       { path: 'update', component: UpdateComponent ,resolve:[AuthGuard]},
       { path: 'applications' ,  component: ApplicationsComponent ,resolve:[AuthGuard]},
       { path: 'appliedjobs' ,  component: AppliedjobsComponent ,resolve:[AuthGuard]},
-      { path: 'addskills' ,  component: AddSkillsComponent ,resolve:[AuthGuard]}
+      { path: 'addskills' ,  component: AddSkillsComponent ,resolve:[AuthGuard]},
+      { path: 'selectedstudents' , component: SelectedStudentsComponent ,resolve:[AuthGuard]},
+      { path: 'selectedjobs' , component: SelectedJobsComponent ,resolve:[AuthGuard]},
+      { path: 'about' , component: AboutComponent }
     ]),
     
   ],

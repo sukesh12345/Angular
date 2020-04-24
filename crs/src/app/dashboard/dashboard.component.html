@@ -16,6 +16,8 @@
         <p> <button mat-menu-item (click)="sidenav.toggle();appliedjobs();" *ngIf="appliedjobstoggle">
                 &nbsp;&nbsp;<mat-icon color="primary">work</mat-icon>&nbsp;&nbsp;<b>View Applied Jobs</b>
             </button></p>
+        <p><button mat-menu-item (click)="sidenav.toggle;" routerLink="/selectedjobs" *ngIf="student">&nbsp;
+                <mat-icon color="primary">check_box</mat-icon>&nbsp;&nbsp;<b>View Selected Jobs</b></button></p>
         <p> <button mat-menu-item (click)="sidenav.toggle();update();" *ngIf="updateinfotoggle">
                 &nbsp;&nbsp;<mat-icon color="primary">account_box</mat-icon>&nbsp;&nbsp;<b>Update Profile</b>
             </button></p>
@@ -38,7 +40,8 @@
 
     <mat-sidenav-content>
         <div class="fixed-toolbar">
-            <mat-toolbar color="primary" *ngIf="recruiter||student||addjob||updateinfo||nojobsmatch||nopostedjobs||noskillsadded">
+            <mat-toolbar color="primary"
+                *ngIf="recruiter||student||addjob||updateinfo||nojobsmatch||nopostedjobs||noskillsadded">
                 <mat-toolbar-row>
 
                     <button mat-button *ngIf="load" (click)="sidenav.toggle()"> <span class="material-icons">
@@ -85,19 +88,21 @@
             <br>
             <br>
             <mat-card *ngIf="noskillsadded">
-                <mat-card-header><p>You haven't added any skills........
-                    <a mat-button style="padding-left: 0px;" color="primary" routerLink="/addskills" >
-                       Add Skills
-                    </a></p>
+                <mat-card-header>
+                    <p>You haven't added any skills........
+                        <a mat-button style="padding-left: 0px;" color="primary" routerLink="/addskills">
+                            Add Skills
+                        </a></p>
                 </mat-card-header>
             </mat-card>
-            </div>
+        </div>
         <div *ngIf="expression" class="nav-content">
-            
-            <div *ngIf="student||!noskillsadded" class="rowjobs">
-                
-                <div class="skill-chip" *ngIf="!noskillsadded">
+
+            <div *ngIf="(student||!noskillsadded)&&!recruiter" class="rowjobs">
+
+                <div class="skill-chip" *ngIf="skillstackdisplay">
                     <h4 style="position:fixed;">Skills added:</h4>
+                    <br>
                     <br>
                     <br>
                     <mat-chip-list #chipList aria-label="skill chips">
@@ -106,7 +111,7 @@
                         </mat-chip>
                     </mat-chip-list>
                 </div>
-                <div *ngFor="let obj of jobdata" >
+                <div *ngFor="let obj of jobdata">
                     <mat-card class="example-card" *ngIf="!nojobsmatch">
                         <mat-card-header>
                             <div class="container">
@@ -133,7 +138,10 @@
                             </p>
                             <p>Drive date: {{obj.DriveDate}}</p>
                             <p>
-                                {{obj.Drivedetails}}
+                                Location: {{obj.CompanyLocation}}
+                            </p>
+                            <p>
+                                Drivedetails: {{obj.Drivedetails}}
                             </p>
                         </mat-card-content>
                         <mat-card-actions>
@@ -180,9 +188,10 @@
                             </p>
                         </mat-card-content>
                         <mat-card-actions>
-                            <button mat-flat-button (click)="viewapplications(obj.___kp_JobId)" color="primary">View
-                                Applications</button>
-                            <!-- <button mat-flat-button color="primary" style="margin-left: 10px;">View Details</button> -->
+                            <button mat-flat-button (click)="viewapplications(obj.___kp_JobId)"
+                                color="primary">Applications</button>
+                            <button mat-flat-button color="primary" (click)="selectedstudents(obj.___kp_JobId)"
+                                style="margin-left: 10px;">Selected Students</button>
                         </mat-card-actions>
                     </mat-card>
                     <mat-divider></mat-divider>
@@ -355,6 +364,11 @@
                             <mat-hint>For better performance copy and paste the link from Browser</mat-hint>
                             <mat-error *ngIf="companywebsiteControl.hasError('required')">Enter company website
                             </mat-error>
+                        </mat-form-field>
+                        <mat-form-field class="full-width">
+                            <mat-label>Add location</mat-label>
+                            <input matInput [(ngModel)]="Companylocation" [formControl]="companylocationControl"
+                                required>
                         </mat-form-field>
                         <!-- <mat-form-field class="full-width">
                             <mat-label>Add Skill :</mat-label>

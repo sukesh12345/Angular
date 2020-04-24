@@ -42,6 +42,7 @@ export class LoginRegisterComponent implements OnInit {
   durationInSeconds = 5;
   color: any;
   phonenumbernotavailiable;
+  bodyerrormessage:any;
 
   constructor(private ApiService: ApiService, private router: Router, private _snackBar: MatSnackBar) {
   }
@@ -114,6 +115,7 @@ export class LoginRegisterComponent implements OnInit {
   usernamecontrol = new FormControl('', [Validators.required]);
   loginpasswordcontrol = new FormControl('', [Validators.required]);
   firstnameControl = new FormControl('', [Validators.required]);
+  lastnameControl = new FormControl('', [Validators.required]);
   //  telephoneControl = new FormControl('', [Validators.required]);
   //  telephoneControl= new FormControl('', [Validators.required, Validators.pattern(this.phoneNumber)]);
   genderControl = new FormControl('', [Validators.required]);
@@ -147,7 +149,9 @@ export class LoginRegisterComponent implements OnInit {
       return false;
   }
   register() {
-    
+    if(this.firstname==""||this.lastname==""||this.usertypeControl.value.name==""||this.genderControl.value.name==""||this.date==""||this.email==""||this.telephone==""||this.password==""||this.confirmpassword==""||this.address1==""||this.address2==""||this.city==""||this.state==""||this.postalcode==""){
+      return
+    }
     let registerpayload = {
       "type": this.usertypeControl.value.name,
       "firstname": this.firstname,
@@ -184,13 +188,18 @@ export class LoginRegisterComponent implements OnInit {
             )
         },
         error => {
-          console.log(error)
+          if(error.error.message=="request body is not appropriate"){
+          this.bodyerrormessage = true;
+         }
+         else{
           this.phonenumbernotavailiable = true;
+         }
         }
       )
   }
   registererrormessageclear(){
     this.phonenumbernotavailiable=false;
+    this.bodyerrormessage=false;
   }
   login() {
     this.loginprogress = true;

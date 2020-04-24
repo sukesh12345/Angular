@@ -31,5 +31,6 @@ export interface jobdata {
     DriveDate: any,
     Drivedetails: any,
     __kf_UserId: any,
-    CompanyWebsite: any
+    CompanyWebsite: any,
+    CompanyLocation: any
 }

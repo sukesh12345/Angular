@@ -7,8 +7,8 @@
 
             <span class="spacer"></span>
             <!-- <mat-icon class="example-icon" aria-hidden="false" aria-label="Example heart icon">favorite</mat-icon> -->
-            <span class="space">About</span>
-            <span class="cursor">Contact Us</span>
+            <span class="space" routerLink="/about">About</span>
+            <!-- <span class="cursor">Contact Us</span> -->
         </mat-toolbar-row>
 
 
@@ -56,7 +56,7 @@
                 <div class="example-container">
                     <mat-form-field>
                         <mat-label>Usertype</mat-label>
-                        <mat-select [formControl]="usertypeControl" (click)="registererrormessageclear();"
+                        <mat-select [formControl]="usertypeControl" (keypress)="registererrormessageclear();"
                             [(ngModel)]="usertype" required>
                             <mat-option>--</mat-option>
                             <mat-option *ngFor="let usertype of types" [value]="usertype">
@@ -68,18 +68,23 @@
                     <div class="full-width form-group">
                         <mat-form-field class="full-width">
                             <input matInput placeholder="First name" [formControl]="firstnameControl"
-                                [(ngModel)]="firstname" (click)="registererrormessageclear();" required>
+                                [(ngModel)]="firstname" (keypress)="registererrormessageclear();" required>
                             <mat-error *ngIf="firstnameControl.hasError('required')">
                                 Please enter a Firstname
                             </mat-error>
                         </mat-form-field>
                         <mat-form-field class="full-width">
-                            <input matInput placeholder="Last Name" [(ngModel)]="lastname" name="lastname">
+                            <input matInput placeholder="Last Name" [formControl]="lastnameControl"
+                                (keypress)="registererrormessageclear();" [(ngModel)]="lastname" required>
+                            <mat-error *ngIf="lastnameControl.hasError('required')">
+                                Please enter a Lastname
+                            </mat-error>
                         </mat-form-field>
                     </div>
                     <mat-form-field>
                         <mat-label>Gender</mat-label>
-                        <mat-select [formControl]="genderControl" [(ngModel)]="gender" required>
+                        <mat-select [formControl]="genderControl" [(ngModel)]="gender"
+                            (keypress)="registererrormessageclear();" required>
                             <mat-option>--</mat-option>
                             <mat-option *ngFor="let gender of genders" [value]="gender">
                                 {{gender.name}}
@@ -93,13 +98,13 @@
                         <mat-datepicker #picker></mat-datepicker>
                         <mat-error *ngIf="dateControl.hasError('required')">Please choose date of birth</mat-error> -->
                         <input type="date" matInput max="12-31-1999" placeholder="Date of birth" [(ngModel)]="date"
-                            [formControl]="dateControl" required>
+                            [formControl]="dateControl" (keypress)="registererrormessageclear();" required>
                         <mat-error *ngIf="dateControl.hasError('required')">Please choose date of birth</mat-error>
                     </mat-form-field>
                     <mat-form-field class="full-width">
                         <mat-label>Email</mat-label>
                         <input matInput placeholder="Email" [formControl]="emailFormControl" [(ngModel)]="email"
-                            required>
+                            (keypress)="registererrormessageclear();" required>
                         <mat-error *ngIf="emailFormControl.hasError('email') && !emailFormControl.hasError('required')">
                             Please enter a valid email address
                         </mat-error>
@@ -123,8 +128,8 @@
                         <mat-hint>Use as Username</mat-hint>
                     </mat-form-field>
                     <mat-form-field>
-                        <input type="password" matInput placeholder="Password" [formControl]="passwordControl"
-                            [(ngModel)]="password" required>
+                        <input type="password" matInput placeholder="Password" (keypress)="registererrormessageclear();"
+                            [formControl]="passwordControl" [(ngModel)]="password" required>
                         <mat-error *ngIf="passwordControl.hasError('required')">
                             Please enter a Password
                         </mat-error>
@@ -133,7 +138,7 @@
                     <mat-form-field class="full-width">
                         <input matInput placeholder="Confirm password" [type]="hide ? 'password' : 'text'"
                             (keyup)="checkpasswords()" [formControl]="confirmpasswordControl"
-                            [(ngModel)]="confirmpassword" required>
+                            [(ngModel)]="confirmpassword" (keypress)="registererrormessageclear();" required>
                         <span class="material-icons" mat-icon-button matSuffix (click)="hide = !hide"
                             [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
                             <mat-icon class="showicon">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
@@ -149,28 +154,30 @@
                     <mat-form-field class="full-width">
                         <mat-label>Door no.</mat-label>
                         <input matInput placeholder="Door no  Ex:1-123" #line1 [formControl]="address1Control"
-                            [(ngModel)]="address1" required required>
+                            [(ngModel)]="address1" (keypress)="registererrormessageclear();" required>
                         <mat-error *ngIf="address1Control.hasError('required')">
                             Please enter door no.
                         </mat-error>
                     </mat-form-field>
                     <mat-form-field class="full-width">
                         <mat-label>Streetname</mat-label>
-                        <input matInput placeholder="Streetname  Ex:Markdown street" #line2
-                            [formControl]="address2Control" [(ngModel)]="address2" required>
+                        <input matInput placeholder="Streetname" #line2 [formControl]="address2Control"
+                            [(ngModel)]="address2" (keypress)="registererrormessageclear();" required>
                         <mat-error *ngIf="address2Control.hasError('required')">
                             Please enter street
                         </mat-error>
                     </mat-form-field>
                     <mat-form-field class="full-width">
-                        <input matInput placeholder="City" [formControl]="cityControl" [(ngModel)]="city" required>
+                        <input matInput placeholder="City" [formControl]="cityControl" [(ngModel)]="city"
+                            (keypress)="registererrormessageclear();" required>
                         <mat-error *ngIf="cityControl.hasError('required')">
                             Please enter your city
                         </mat-error>
                     </mat-form-field>
                     <mat-form-field class="full-width">
                         <input matInput placeholder="State" [formControl]="stateControl" [matAutocomplete]="auto"
-                            [(ngModel)]="state" (click)="getstatesname();" required>
+                            [(ngModel)]="state" (click)="getstatesname();registererrormessageclear();"
+                            (keypress)="registererrormessageclear();" required>
                         <mat-autocomplete #auto="matAutocomplete">
                             <mat-option *ngFor="let state of filteredstates | async" [value]="state">
                                 {{state}}
@@ -184,14 +191,17 @@
 
                     <mat-form-field class="full-width">
                         <input matInput #postalCode maxlength="6" placeholder="Postal Code" value=""
-                            [formControl]="postalControl" [(ngModel)]="postalcode" required>
+                            [formControl]="postalControl" [(ngModel)]="postalcode"
+                            (keypress)="registererrormessageclear();" required>
                         <mat-error *ngIf="postalControl.hasError('required')">
                             Please enter Zipcode
                         </mat-error>
                         <mat-hint align="end">{{postalCode.value.length}} / 6</mat-hint>
-                       
+
                     </mat-form-field>
+                    <mat-error *ngIf="bodyerrormessage">Please enter all fileds</mat-error>
                     <mat-error *ngIf="phonenumbernotavailiable">This phone number is already taken</mat-error>
+
                     <button type="submit" (click)="register();" mat-raised-button color="primary">Register</button>
                 </div>
             </form>

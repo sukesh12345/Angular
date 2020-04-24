@@ -81,6 +81,8 @@ export class DashboardComponent implements OnInit {
   skillstack: string[] = [];
   nopostedjobs:any;
   noskillsadded : any;
+  Companylocation :any;
+  skillstackdisplay :any;
 
   constructor(private ApiService: ApiService, private router: Router) {
     this.filteredskills = this.skillcontrol.valueChanges.pipe(
@@ -111,7 +113,8 @@ export class DashboardComponent implements OnInit {
     this.id = localStorage.getItem('id');
     this.nopostedjobs=false;
     this.noskillsadded = false;
-
+    this.skillstackdisplay = false;
+    
     this.ApiService.getskills()
       .subscribe(
         data => {
@@ -128,23 +131,30 @@ export class DashboardComponent implements OnInit {
           this.dashboardprogress = false;
           this.userinfo = data.data;
           this.load = true;
-          if (this.userinfo.Status[0] == "Not Approved") {
+          console.log(this.userinfo.Status[0])
+          if (this.userinfo.Status[0] == "NotApproved") {
             this.approved = true;
-            localStorage.clear();
             return
           }
+          else{
+            this.approved = false;
+          }
+          console.log("here");
           this.expression = true;
           if (this.userinfo.Type[0] == "Student") {
             this.addskillstoggle = true;
             this.student = true;
+            this.skillstackdisplay = true;
             this.ApiService.getsrelatedkills()
               .subscribe(
                 data => {
                   this.noskillsadded = false;
+                  this.skillstackdisplay = true;
                   this.skillstack = data.data;
                 },
                 error=>{
                   this.noskillsadded = true;
+                  this.skillstackdisplay = false;
                 }
               )
             this.updateinfotoggle = true;
@@ -301,7 +311,7 @@ export class DashboardComponent implements OnInit {
         error => {
           console.log(error.error);
           this.nopostedjobs=true;
-          this.recruiter = false;
+          this.recruiter = false;          
         }
       )
   }
@@ -339,6 +349,11 @@ export class DashboardComponent implements OnInit {
     localStorage.setItem('jobid', jobid[0]);
     this.router.navigate(['applications']);
   }
+  selectedstudents(jobid) {
+    console.log("here"+jobid)
+    localStorage.setItem('jobid', jobid[0]);
+    this.router.navigate(['selectedstudents']);
+  }
 
 
   addnewjob() {
@@ -368,14 +383,17 @@ export class DashboardComponent implements OnInit {
     this.viewjobstoggle = false;
     this.updateinfotoggle = true;
   }
+  companylocationControl = new FormControl;
   savejob() {
     this.addjobprogress = true;
     console.log(this.skills);
+    console.log(this.Companylocation)
     let addjobpayload = {
       "Company": this.Company,
       "DriveDate": this.DriveDate,
       "Drivedetails": this.Drivedetails,
       "CompanyWebsite": this.CompanyWebsite,
+      "CompanyLocation":this.companylocationControl.value,
       "array":this.skills
     }
     this.ApiService.addjob(addjobpayload)

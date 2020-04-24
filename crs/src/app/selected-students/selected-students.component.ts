@@ -5,23 +5,22 @@ import { Router } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
 
 
-
 @Component({
-  selector: 'app-applications',
-  templateUrl: './applications.component.html',
-  styleUrls: ['./applications.component.scss']
+  selector: 'app-selected-students',
+  templateUrl: './selected-students.component.html',
+  styleUrls: ['./selected-students.component.scss']
 })
-export class ApplicationsComponent implements OnInit {
+export class SelectedStudentsComponent implements OnInit {
   userinfo: userinfo;
   jobid: any;
   applicationsearch: any;
   applications:any;
   noapplications:any;
   counter:any;
-  status:any;
-  timecount:any;
+  status: any;
   displayedColumns: string[] = ['Name', 'Email', 'Telephone', 'Options'];
   dataSource: MatTableDataSource<any>;
+
   constructor(private ApiService: ApiService, private router: Router) { }
 
   ngOnInit() {
@@ -29,11 +28,11 @@ export class ApplicationsComponent implements OnInit {
     this.applications = false;
     this.noapplications = false;
     this.jobid = localStorage.getItem('jobid');
+    this.status = 'selected';
     //localStorage.removeItem('jobid');                     //change
     this.viewapplications();
   }
   viewapplications(){
-    this.status = 'notselected';
     this.ApiService.viewapplications(this.jobid,this.status)
       .subscribe(
         data => {
@@ -49,11 +48,9 @@ export class ApplicationsComponent implements OnInit {
           //this.router.navigate(['profile']);
           this.applications = false;
           this.noapplications = true;
-          this.timecount=10;
           setTimeout(() => {
             this.router.navigate(['profile']);
         }, 5000);  
-         
           console.log(error);
         }
       )
@@ -65,14 +62,16 @@ export class ApplicationsComponent implements OnInit {
   navigate(){
     this.router.navigate(['profile']);
   }
-  selectstudent(studentid){
-    this.applicationsearch=true;
-    this.status = 'selected';
+  cancelstudent(studentid){
+    this.applicationsearch = true;
+    this.status = 'notselected'
     this.ApiService.updateapplicationstatus(studentid,this.status)
     .subscribe(
       data=>{
+        this.status = 'selected';
         this.viewapplications();
-        this.status = 'notselected';
+        this.applicationsearch = false;
+        
       },
       error=>{
         console.log(error);

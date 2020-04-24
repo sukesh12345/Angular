@@ -4,15 +4,13 @@ import { ApiService } from '../services/api.service';
 import { Router } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
 
-
-
 @Component({
-  selector: 'app-appliedjobs',
-  templateUrl: './appliedjobs.component.html',
-  styleUrls: ['./appliedjobs.component.scss']
+  selector: 'app-selected-jobs',
+  templateUrl: './selected-jobs.component.html',
+  styleUrls: ['./selected-jobs.component.scss']
 })
-export class AppliedjobsComponent implements OnInit {
-  displayedColumns: string[] = ['Company', 'DriveDate', 'CompanyWebsite', 'Options'];
+export class SelectedJobsComponent implements OnInit {
+  displayedColumns: string[] = ['Company', 'DriveDate', 'CompanyWebsite','Options'];
   dataSource: MatTableDataSource<any>;
   constructor(private ApiService: ApiService, private router: Router) { }
   jobssearch: any;
@@ -26,21 +24,8 @@ export class AppliedjobsComponent implements OnInit {
     this.appliedjobstable = false;
     this.getapplications();
   }
-  retrieve(jobid){
-    this.jobssearch = true;
-    this.ApiService.retriveapplication(jobid)
-    .subscribe(
-      data=>{
-        this.getapplications();
-      },
-      error=>{
-        console.log(error);
-      }      
-    )
-    console.log(jobid);
-  }
   getapplications(){
-    status='notselected'
+    status='selected'
     this.ApiService.viewappliedjobs(status)
     .subscribe(
       data=>{
@@ -53,16 +38,13 @@ export class AppliedjobsComponent implements OnInit {
           this.nojobs=true;
           this.appliedjobstable = false;
           setTimeout(() => {
-            this.router.navigate(['profile']);
+            this.router.navigate(['appliedjobs']);
         }, 5000);  
       }
     )
   }
   navigate(){
-    this.router.navigate(['profile']);
-    setTimeout(() => {
-      
-    }, 0);
+    this.router.navigate(['appliedjobs']);
   }
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;

@@ -37,6 +37,8 @@ import { AddSkillsComponent } from './add-skills/add-skills.component';
 import { SelectedStudentsComponent } from './selected-students/selected-students.component';
 import { SelectedJobsComponent } from './selected-jobs/selected-jobs.component';
 import { AboutComponent } from './about/about.component';
+import { SkilsModalComponent } from './skils-modal/skils-modal.component';
+import { JobDeleteConfirmationComponent } from './job-delete-confirmation/job-delete-confirmation.component';
 
 
 
@@ -51,7 +53,13 @@ import { AboutComponent } from './about/about.component';
     AddSkillsComponent,
     SelectedStudentsComponent,
     SelectedJobsComponent,
-    AboutComponent
+    AboutComponent,
+    SkilsModalComponent,
+    JobDeleteConfirmationComponent
+  ],
+  entryComponents: [
+    SkilsModalComponent,
+    JobDeleteConfirmationComponent
   ],
   imports: [
     BrowserModule,

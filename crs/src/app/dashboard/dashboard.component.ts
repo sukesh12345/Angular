@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject, ViewChild, ElementRef } from '@angular/core';
 import { ApiService } from '../services/api.service';
 import { Router } from '@angular/router';
-import { userinfo, jobdata } from '../interface/interface';
+import { userinfo, jobdata, skills } from '../interface/interface';
 import { FormControl, Validators, NgForm } from '@angular/forms';
 import { gender } from '../interface/interface';
 import { FormBuilder, FormGroup } from '@angular/forms';
@@ -10,7 +10,9 @@ import { MatAutocompleteSelectedEvent, MatAutocomplete } from '@angular/material
 import { MatChipInputEvent } from '@angular/material/chips';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
-
+import { MatDialog } from '@angular/material';
+import { SkilsModalComponent } from '../skils-modal/skils-modal.component';
+import { JobDeleteConfirmationComponent } from '../job-delete-confirmation/job-delete-confirmation.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -79,12 +81,14 @@ export class DashboardComponent implements OnInit {
   matchjobprogress: any;
   nojobsmatch: any;
   skillstack: string[] = [];
-  nopostedjobs:any;
-  noskillsadded : any;
-  Companylocation :any;
-  skillstackdisplay :any;
+  nopostedjobs: any;
+  noskillsadded: any;
+  Companylocation: any;
+  skillstackdisplay: any;
+  deletejobconfirmationdialogresult: any;
 
-  constructor(private ApiService: ApiService, private router: Router) {
+
+  constructor(private ApiService: ApiService, private router: Router, public dialog: MatDialog) {
     this.filteredskills = this.skillcontrol.valueChanges.pipe(
       startWith(null),
       map((skill: string | null) => skill ? this._filter(skill) : this.allskills.slice()));
@@ -111,10 +115,10 @@ export class DashboardComponent implements OnInit {
     this.approved = false;
     this.nojobsmatch = false;
     this.id = localStorage.getItem('id');
-    this.nopostedjobs=false;
+    this.nopostedjobs = false;
     this.noskillsadded = false;
     this.skillstackdisplay = false;
-    
+
     this.ApiService.getskills()
       .subscribe(
         data => {
@@ -136,7 +140,7 @@ export class DashboardComponent implements OnInit {
             this.approved = true;
             return
           }
-          else{
+          else {
             this.approved = false;
           }
           console.log("here");
@@ -152,7 +156,7 @@ export class DashboardComponent implements OnInit {
                   this.skillstackdisplay = true;
                   this.skillstack = data.data;
                 },
-                error=>{
+                error => {
                   this.noskillsadded = true;
                   this.skillstackdisplay = false;
                 }
@@ -176,6 +180,9 @@ export class DashboardComponent implements OnInit {
         }
       )
 
+  }
+  openskillsdialog(jobid) {
+    this.dialog.open(SkilsModalComponent, { data: jobid })
   }
   drivedateControl = new FormControl('', [Validators.required]);
   companyControl = new FormControl('', [Validators.required]);
@@ -304,18 +311,18 @@ export class DashboardComponent implements OnInit {
       .subscribe(
         data => {
           this.jobdata = data.data;
-          this.nopostedjobs=false;
-          this.recruiter=true;
+          this.nopostedjobs = false;
+          this.recruiter = true;
           //this.arrayOne(data.count);
         },
         error => {
           console.log(error.error);
-          this.nopostedjobs=true;
-          this.recruiter = false;          
+          this.nopostedjobs = true;
+          this.recruiter = false;
         }
       )
   }
-  
+
   viewmatchingjobs() {
     this.matchjobprogress = true;
     this.viewmatchingjobstoggle = false;
@@ -341,7 +348,7 @@ export class DashboardComponent implements OnInit {
         },
         error => {
           console.log("here" + error);
-          this.student=false;
+          this.student = false;
         }
       )
   }
@@ -350,7 +357,7 @@ export class DashboardComponent implements OnInit {
     this.router.navigate(['applications']);
   }
   selectedstudents(jobid) {
-    console.log("here"+jobid)
+    console.log("here" + jobid)
     localStorage.setItem('jobid', jobid[0]);
     this.router.navigate(['selectedstudents']);
   }
@@ -364,7 +371,7 @@ export class DashboardComponent implements OnInit {
     this.viewjobstoggle = true;
     this.updateinfotoggle = true;
     this.color = "primary";
-    this.skills=[];
+    this.skills = [];
   }
   addjobcancel() {
     this.addjobtoggle = true;
@@ -372,7 +379,7 @@ export class DashboardComponent implements OnInit {
     this.expression = true;
     this.viewjobstoggle = false;
     this.color = "primary";
-    this.skills=[];
+    this.skills = [];
   }
   viewjoblist() {
     this.recruiter = true;
@@ -393,8 +400,8 @@ export class DashboardComponent implements OnInit {
       "DriveDate": this.DriveDate,
       "Drivedetails": this.Drivedetails,
       "CompanyWebsite": this.CompanyWebsite,
-      "CompanyLocation":this.companylocationControl.value,
-      "array":this.skills
+      "CompanyLocation": this.companylocationControl.value,
+      "array": this.skills
     }
     this.ApiService.addjob(addjobpayload)
       .subscribe(
@@ -408,7 +415,7 @@ export class DashboardComponent implements OnInit {
           this.Drivedetails = null;
           this.CompanyWebsite = null;
           this.addjobprogress = false;
-          this.skills=[];
+          this.skills = [];
           this.ngOnInit();
         },
         error => {
@@ -420,12 +427,27 @@ export class DashboardComponent implements OnInit {
   appliedjobs() {
     this.router.navigate(['appliedjobs']);
   }
+  deletejobconfirmation(jobid) {
+    this.deleteprogress = true;
+    let dialogref = this.dialog.open(JobDeleteConfirmationComponent);
+    dialogref.afterClosed().subscribe(
+      result => {
+        this.deletejobconfirmationdialogresult = result;
+        console.log("here" + this.deletejobconfirmationdialogresult);
+        if (this.deletejobconfirmationdialogresult == 'true') {
+          this.deletejob(jobid)
+        }
+        else {
+          this.deleteprogress = false;
+        }
+      });
+  }
   deletejob(jobid) {
     this.deleteprogress = true;
     this.ApiService.deletejob(jobid)
       .subscribe(
         data => {
-          this.ngOnInit();
+          this.getpostedjobs();
           this.deleteprogress = false;
         },
         error => {

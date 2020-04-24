@@ -34,3 +34,6 @@ export interface jobdata {
     CompanyWebsite: any,
     CompanyLocation: any
 }
+export interface skills{
+    skillname:any;
+}

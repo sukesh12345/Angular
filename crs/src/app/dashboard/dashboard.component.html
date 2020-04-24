@@ -29,9 +29,9 @@
                     color="primary">
                     add_box</mat-icon>&nbsp;&nbsp;<b>Add
                     New</b>&nbsp;</button></p>
-        <p>
+        <!-- <p>
             <button mat-menu-item>&nbsp;&nbsp;<mat-icon color="primary">report_problem</mat-icon>
-                &nbsp;&nbsp;<b>Report an issue</b></button></p>
+                &nbsp;&nbsp;<b>Report an issue</b></button></p> -->
         <p>
             <button mat-menu-item (click)="logout()">&nbsp;&nbsp;<mat-icon color="primary">input</mat-icon>
                 &nbsp;&nbsp;<b>Log
@@ -147,14 +147,19 @@
                         <mat-card-actions>
                             <button mat-flat-button (click)="applyjob(obj.___kp_JobId)" color="primary">Apply
                             </button>
-                            <!-- <button mat-flat-button color="primary" style="margin-left: 10px;">View Details</button> -->
+                            <button mat-flat-button color="primary" (click)="openskillsdialog(obj.___kp_JobId);"
+                                style="margin-left: 10px;">View Required Skills</button>
                         </mat-card-actions>
                     </mat-card>
                     <mat-divider></mat-divider>
                 </div>
             </div>
             <div *ngIf="nopostedjobs" class="recruiterrowjobs">
-                <h4>You haven't posted any jobs yet!!!</h4>
+                <mat-card>
+                    <mat-card-content>
+                        You haven't posted any jobs yet!!!
+                    </mat-card-content>
+                </mat-card>
             </div>
             <div *ngIf="recruiter" class="recruiterrowjobs">
                 <div *ngFor="let obj of jobdata">
@@ -171,7 +176,8 @@
                                         </button>
                                     </a></div>
                                 <div class="float-sm-right">
-                                    <button mat-icon-button color="warn" (click)="deletejob(obj.___kp_JobId);"
+                                    <button mat-icon-button color="warn"
+                                        (click)="deletejobconfirmation(obj.___kp_JobId);"
                                         aria-label="Example icon button with a menu icon">
                                         <mat-icon>delete</mat-icon>
                                     </button>

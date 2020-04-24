@@ -66,6 +66,9 @@ export class ApiService {
     this.id = localStorage.getItem('id');
     return this.httpclient.get("http://localhost/crs/public/crsapi.php/api/users/"+this.id+"/skills");
   }
+  getsrelatedkillsofjob(jobid):Observable<any>{     //get realted skillsofjob
+    return this.httpclient.get("http://localhost/crs/public/crsapi.php/api/users/"+jobid+"/skills");
+  }
   getskills():Observable<any>{        //get skills for autocomplete
     return this.httpclient.get("http://localhost/crs/public/crsapi.php/allskills");
   }

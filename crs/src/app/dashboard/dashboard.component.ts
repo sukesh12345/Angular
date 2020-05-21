@@ -10,9 +10,11 @@ import { MatAutocompleteSelectedEvent, MatAutocomplete } from '@angular/material
 import { MatChipInputEvent } from '@angular/material/chips';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatSnackBar } from '@angular/material';
 import { SkilsModalComponent } from '../skils-modal/skils-modal.component';
 import { JobDeleteConfirmationComponent } from '../job-delete-confirmation/job-delete-confirmation.component';
+import {MatBottomSheet, MatBottomSheetRef} from '@angular/material/bottom-sheet';
+import { UploaadResumeBottomSheetComponent } from '../uploaad-resume-bottom-sheet/uploaad-resume-bottom-sheet.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -86,14 +88,22 @@ export class DashboardComponent implements OnInit {
   Companylocation: any;
   skillstackdisplay: any;
   deletejobconfirmationdialogresult: any;
+  selectedjobstoggle: any;
+  skillfilter: string[] = [];
+  companies: string[] = [];
+  companyfilter: string[]= [];
+  jobfilters: string[] = [];
+  filtercheckbox: any;
+  applymessage = "Applied succesfully";
+  close = "Close";
 
-
-  constructor(private ApiService: ApiService, private router: Router, public dialog: MatDialog) {
+  constructor(private ApiService: ApiService, private router: Router, public dialog: MatDialog, private _bottomSheet: MatBottomSheet , private _snackBar: MatSnackBar) {
     this.filteredskills = this.skillcontrol.valueChanges.pipe(
       startWith(null),
       map((skill: string | null) => skill ? this._filter(skill) : this.allskills.slice()));
+  } openBottomSheet(): void {
+    this._bottomSheet.open(UploaadResumeBottomSheetComponent);
   }
-
   ngOnInit() {
     this.addskillstoggle = false;
     this.dashboardprogress = true;
@@ -126,6 +136,12 @@ export class DashboardComponent implements OnInit {
         }
       )
 
+      this.ApiService.companies()
+      .subscribe(
+        data=>{
+          this.companies = data.data;
+        }
+      )
 
 
     this.ApiService.getuser()
@@ -135,7 +151,7 @@ export class DashboardComponent implements OnInit {
           this.dashboardprogress = false;
           this.userinfo = data.data;
           this.load = true;
-          console.log(this.userinfo.Status[0])
+          // console.log(this.userinfo.Status[0])
           if (this.userinfo.Status[0] == "NotApproved") {
             this.approved = true;
             return
@@ -143,32 +159,35 @@ export class DashboardComponent implements OnInit {
           else {
             this.approved = false;
           }
-          console.log("here");
+          // console.log("here");
           this.expression = true;
           if (this.userinfo.Type[0] == "Student") {
+            localStorage.setItem('Firstname',this.userinfo.Firstname[0]);
             this.addskillstoggle = true;
             this.student = true;
             this.skillstackdisplay = true;
+            this.selectedjobstoggle = true;
             this.ApiService.getsrelatedkills()
               .subscribe(
                 data => {
                   this.noskillsadded = false;
                   this.skillstackdisplay = true;
                   this.skillstack = data.data;
+                  this.viewmatchingjobs();
+
                 },
                 error => {
+
                   this.noskillsadded = true;
                   this.skillstackdisplay = false;
                 }
               )
             this.updateinfotoggle = true;
             this.appliedjobstoggle = true;
-            this.viewmatchingjobs();
           }
           else {
             // this.i = 0;
             this.getpostedjobs();
-            this.recruiter = true;
             this.addjobtoggle = true;
             this.updateinfotoggle = true;
           }
@@ -313,15 +332,20 @@ export class DashboardComponent implements OnInit {
           this.jobdata = data.data;
           this.nopostedjobs = false;
           this.recruiter = true;
+          this.deleteprogress = false;
           //this.arrayOne(data.count);
         },
         error => {
-          console.log(error.error);
+          console.log(error);
           this.nopostedjobs = true;
-          this.recruiter = false;
+          this.student = false;
+          this.recruiter = true;
+          this.deleteprogress = false;
         }
       )
+    console.log("2" + this.jobdata);
   }
+
 
   viewmatchingjobs() {
     this.matchjobprogress = true;
@@ -332,14 +356,16 @@ export class DashboardComponent implements OnInit {
     this.ApiService.getmatchingjobs()
       .subscribe(
         data => {
-          console.log(data.data);
+          
           if (data.data[0] == 'There are no matched jobs') {
+            console.log("nomatched jobs");
             this.nojobsmatch = true;
             this.student = false;
           }
           else {
             this.expression = true;
             // console.log(data.data);
+
             this.jobdata = data.data;
             this.student = true;
             this.nojobsmatch = false;
@@ -347,8 +373,10 @@ export class DashboardComponent implements OnInit {
           this.matchjobprogress = false;
         },
         error => {
-          console.log("here" + error);
+          this.nojobsmatch = true;
+
           this.student = false;
+          this.matchjobprogress = false;
         }
       )
   }
@@ -357,7 +385,7 @@ export class DashboardComponent implements OnInit {
     this.router.navigate(['applications']);
   }
   selectedstudents(jobid) {
-    console.log("here" + jobid)
+   
     localStorage.setItem('jobid', jobid[0]);
     this.router.navigate(['selectedstudents']);
   }
@@ -382,7 +410,6 @@ export class DashboardComponent implements OnInit {
     this.skills = [];
   }
   viewjoblist() {
-    this.recruiter = true;
     this.addjob = false;
     this.addjobtoggle = true;
     this.updateinfo = false;
@@ -448,21 +475,21 @@ export class DashboardComponent implements OnInit {
       .subscribe(
         data => {
           this.getpostedjobs();
-          this.deleteprogress = false;
         },
         error => {
 
         }
       )
   }
-  applyjob(jobid) {
+  applyjob(jobid,companyname) {
     this.applyprogress = true;
-    console.log(jobid);
-    this.ApiService.applyjob(jobid)
+    this.ApiService.applyjob(jobid, this.userinfo.Firstname)
       .subscribe(
         data => {
           // console.log(data.data);
           this.applyprogress = false;
+          this.applymessage = "Applied to "+companyname;
+          this.openSnackBar(this.applymessage,this.close);
           this.viewmatchingjobs();
 
         },
@@ -519,5 +546,55 @@ export class DashboardComponent implements OnInit {
     console.log('this.selectedChips: ' + this.selectedChips);
   }
 
+  skillfilters(e, skill) {
+    if (e.checked) {
+      this.skillfilter.push(skill);
+    }
+    else {
+      this.skillfilter = this.skillfilter.filter(m => m != skill);
+    }
+  }
+  companyfilters(e, company) {
+    if (e.checked) {
+      this.companyfilter.push(company);
+    }
+    else {
+      this.companyfilter = this.companyfilter.filter(m => m != company);
+    }
+  }
+  applyfilters() {
+    this.nojobsmatch = false;
+    if(this.skillfilter == null && this.companyfilter==null){
+      return
+    }
+    this.matchjobprogress = true;
+    let jobfilterspayload = {
+      "skillfilter" : this.skillfilter,
+      "companyfilter" : this.companyfilter
+    }
+    // console.log(jobfilterspayload);
+    this.ApiService.filteredjobs(jobfilterspayload)
+    .subscribe(
+      data=>{
+        this.matchjobprogress = false;
+        this.jobdata=data.data;
+        if(this.jobdata[0] == 'There are no matched jobs'){
+            this.nojobsmatch = true;
+        }
+      }
+    )
+  }
+  clearfilters(){
+    this.viewmatchingjobs();
+    this.filtercheckbox = false;
+    this.skillfilter = [];
+    this.companyfilter = [];
+  }
+
+  openSnackBar(message: string, action: any) {
+    this._snackBar.open(message, action, {
+      duration: 5000,
+    });
+  }
 
 }

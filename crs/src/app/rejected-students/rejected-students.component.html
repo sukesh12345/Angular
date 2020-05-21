@@ -1,0 +1,56 @@
+<div>
+    <mat-progress-bar mode="indeterminate" *ngIf="applicationsearch"></mat-progress-bar>
+</div>
+<div *ngIf="applications">
+    <a mat-button color="primary" style="position: absolute;" routerLink="/profile"><span class="material-icons">
+            keyboard_backspace
+        </span>Go Back Jobs</a>
+    <mat-form-field class="filter material-icons">
+        <span class="material-icons" style="transform: scale(0.75);">
+            search</span>
+        <mat-label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Search</mat-label>
+        <input matInput (keyup)="applyFilter($event)"
+            placeholder="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Use Name,Email or Telephone">
+    </mat-form-field>
+
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+        <!-- Name Column -->
+        <ng-container matColumnDef="Name">
+            <th mat-header-cell *matHeaderCellDef> Name </th>
+            <td mat-cell *matCellDef="let element"> {{element.Firstname}} {{element.Lastname}}</td>
+        </ng-container>
+
+        <!-- Email Column -->
+        <ng-container matColumnDef="Email">
+            <th mat-header-cell *matHeaderCellDef> Email </th>
+            <td mat-cell *matCellDef="let element"> {{element.Email}} </td>
+        </ng-container>
+
+        <!-- Telephone Column -->
+        <ng-container matColumnDef="Telephone">
+            <th mat-header-cell *matHeaderCellDef> Telephone </th>
+            <td mat-cell *matCellDef="let element"> {{element.Telephone}} </td>
+        </ng-container>
+        <ng-container matColumnDef="Options">
+            <th mat-header-cell *matHeaderCellDef> <a mat-button color="primary" routerLink="/selectedstudents">
+                    View Selected Students</a><br><a mat-button color="primary" routerLink="/applications">
+                        View Applications</a> </th>
+            <td mat-cell *matCellDef="let element">&nbsp;&nbsp;&nbsp;&nbsp;<button mat-stroked-button
+                    (click)="selectstudent(element.___kp_UserId)" color='primary'>Select</button>&nbsp;&nbsp;
+            </td>
+        </ng-container>
+        <!-- <button mat-stroked-button color='primary'>View
+            Details</button> -->
+
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+</div>
+<div *ngIf="noapplications">
+    <mat-card>You have not rejeted any applications</mat-card>
+    <mat-card-content>
+        <p style="cursor: pointer;color: blue;" (click)="navigate()">Click here if not redirected in 5secs.......</p>
+    </mat-card-content>
+
+</div>

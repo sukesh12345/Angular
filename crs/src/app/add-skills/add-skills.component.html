@@ -1,57 +1,105 @@
-<mat-progress-bar mode="indeterminate" [color]="color" *ngIf="skilladdprogress"></mat-progress-bar>
-
-<a mat-button color="primary" style="position: absolute;" routerLink="/profile"><span class="material-icons">
-        keyboard_backspace
-    </span>Go Back to Profile</a>
-<br>
-
-<div class="container">
-    <div>
-        <!-- <mat-chip *ngFor="let skill of skills" [selectable]="selectable" [removable]="removable" (removed)="remove(skill)"
-        name="skillvalue">
-        {{skill}}
-        <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
-    </mat-chip> -->
-
-        <mat-form-field class="mat-chi">
-            <mat-label>Add Skill :</mat-label>
-            <mat-chip-list #chipList aria-label="skill selection">
-
-                <input placeholder="Add Skill..." #skillInput [(ngModel)]="skillvalue" [formControl]="addskillcontrol"
-                    [matAutocomplete]="auto" [matChipInputFor]="chipList"
-                    [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="addOnBlur"
-                    (matChipInputTokenEnd)="add($event)" style="padding-left: 70px;">
-
-            </mat-chip-list>
-            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
-                <mat-option *ngFor="let skill of filteredskills | async" [value]="skill" class="mat-chi-list">
-                    {{skill}}
-                </mat-option>
-            </mat-autocomplete>
-            <mat-hint>**Skills will be saved Automatically on selecting</mat-hint>
-        </mat-form-field>
-
-    </div>
-    <br>
-    <br>
-    <br>
-    <br>
-    <div class="skill-chip">
-        <h4 style="position: fixed;">Skills added</h4>
-        <br>
-        <p>
-            <mat-hint style="font-size: smaller;">**Click on </mat-hint>
-            <mat-icon class="align-icon">cancel</mat-icon>
-            <mat-hint>to remove the skill</mat-hint>
+<mat-sidenav-container class="sidenav-container">
+    <mat-sidenav #sidenav mode="over" class="sidenav">
+        <p><button mat-button (click)="sidenav.toggle()"><span class="material-icons">
+                    keyboard_backspace
+                </span></button></p>
+        <p><button mat-menu-item (click)="sidenav.toggle();openBottomSheet();"> &nbsp;&nbsp;<mat-icon
+                    color="primary">
+                    cloud_upload</mat-icon>&nbsp;&nbsp;Upload Resume
+            </button>
         </p>
-        <mat-chip-list #chipList aria-label="skill chips">
-            <mat-chip *ngFor="let skill of skillstack" [removable]="removable" (removed)="remove(skill)">
-                {{skill}}
-                <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
-            </mat-chip>
-        </mat-chip-list>
-    </div>
-</div>
-<!-- Copyright 2019 Google LLC. All Rights Reserved.
-        Use of this source code is governed by an MIT-style license that
-        can be found in the LICENSE file at http://angular.io/license -->
+        <p>
+            <button mat-menu-item (click)="sidenav.toggle();" routerLink="/profile">&nbsp;&nbsp;<mat-icon color="primary">
+                    equalizer</mat-icon>&nbsp;&nbsp;<b>View matching Jobs</b>&nbsp;</button></p>
+        <p> <button mat-menu-item (click)="sidenav.toggle();" routerLink="/appliedjobs">
+                &nbsp;&nbsp;<mat-icon color="primary">work</mat-icon>&nbsp;&nbsp;<b>View Applied Jobs</b>
+            </button></p>
+        <p><button mat-menu-item (click)="sidenav.toggle;" routerLink="/selectedjobs">&nbsp;
+                <mat-icon color="primary">check_box</mat-icon>&nbsp;&nbsp;<b>View Selected Jobs</b></button></p>
+        <!-- <p>
+    <button mat-menu-item>&nbsp;&nbsp;<mat-icon color="primary">report_problem</mat-icon>
+        &nbsp;&nbsp;<b>Report an issue</b></button></p> -->
+        <p>
+            <button mat-menu-item (click)="logout()">&nbsp;&nbsp;<mat-icon color="primary">input</mat-icon>
+                &nbsp;&nbsp;<b>Log
+                    Out</b></button></p>
+    </mat-sidenav>
+    <mat-sidenav-content>
+        <div class="fixed-toolbar">
+            <mat-toolbar color="primary">
+                <mat-toolbar-row>
+
+                    <button mat-button (click)="sidenav.toggle()"> <span class="material-icons">
+                            menu
+                        </span>Hi {{Firstname}}!!</button>
+                    <mat-menu #menu="matMenu">
+
+
+                    </mat-menu>
+                    <span class="spacer"></span>
+                    <!-- <mat-icon class="example-icon" aria-hidden="false" aria-label="Example heart icon">favorite</mat-icon> -->
+                    <!-- <span class="space">About</span>
+                        <span class="cursor">Contact Us</span>
+                        <span class="space"></span> -->
+
+                </mat-toolbar-row>
+            </mat-toolbar>
+
+        </div>
+
+        <br>
+        <br>
+        <br>
+        <mat-progress-bar mode="indeterminate" class="skill-progress" [color]="color" *ngIf="skilladdprogress">
+        </mat-progress-bar>
+        <a mat-button color="primary" style="position: absolute;" routerLink="/profile"><span class="material-icons">
+                keyboard_backspace
+            </span>Go Back to Profile</a>
+        <br>
+
+        <div class="container">
+            <div>
+                <mat-form-field class="mat-chi">
+                    <mat-label>Add Skill :</mat-label>
+                    <mat-chip-list #chipList aria-label="skill selection">
+
+                        <input placeholder="Add Skill..." #skillInput [(ngModel)]="skillvalue"
+                            [formControl]="addskillcontrol" [matAutocomplete]="auto" [matChipInputFor]="chipList"
+                            [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="addOnBlur"
+                            (matChipInputTokenEnd)="add($event)" style="padding-left: 70px;">
+
+                    </mat-chip-list>
+                    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+                        <mat-option *ngFor="let skill of filteredskills | async" [value]="skill" class="mat-chi-list">
+                            {{skill}}
+                        </mat-option>
+                    </mat-autocomplete>
+                    <mat-hint>**Skills will be saved Automatically on selecting</mat-hint>
+                </mat-form-field>
+
+            </div>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+
+            <div class="skill-chip">
+                <h4 style="position: fixed;">Skills added</h4>
+                <br>
+                <p style="position: fixed;">
+                    <mat-hint style="font-size: smaller;">**Click on </mat-hint>
+                    <mat-icon class="align-icon">cancel</mat-icon>
+                    <mat-hint>to remove the skill</mat-hint>
+                </p>
+                <br>
+                <mat-chip-list #chipList aria-label="skill chips">
+                    <mat-chip *ngFor="let skill of skillstack" [removable]="removable" (removed)="remove(skill)">
+                        {{skill}}
+                        <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                    </mat-chip>
+                </mat-chip-list>
+            </div>
+        </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>

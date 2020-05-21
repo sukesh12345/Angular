@@ -6,6 +6,9 @@ import { MatChipInputEvent } from '@angular/material/chips';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { ApiService } from '../services/api.service';
+import { Router } from '@angular/router';
+import { UploaadResumeBottomSheetComponent } from '../uploaad-resume-bottom-sheet/uploaad-resume-bottom-sheet.component';
+import { MatBottomSheet } from '@angular/material';
 
 
 
@@ -28,6 +31,7 @@ export class AddSkillsComponent implements OnInit {
   allskills: string[] = [];
   skillstack: string[] = [];
   skilladdprogress : any;
+  Firstname : any;
 
   @ViewChild('skillInput', { static: false }) skillInput: ElementRef<HTMLInputElement>;
   @ViewChild('auto', { static: false }) matAutocomplete: MatAutocomplete;
@@ -37,7 +41,7 @@ export class AddSkillsComponent implements OnInit {
   selectedChips: any[] = [];
 
 
-  constructor(private ApiService: ApiService) {
+  constructor(private ApiService: ApiService ,  private router: Router ,  private _bottomSheet: MatBottomSheet) {
     this.filteredskills = this.addskillcontrol.valueChanges.pipe(
       startWith(null),
       map((skill: string | null) => skill ? this._filter(skill) : this.allskills.slice()));
@@ -52,6 +56,8 @@ export class AddSkillsComponent implements OnInit {
         }
       )
       this.getskills();
+      console.log(localStorage.getItem('Firstname'));
+      this.Firstname = localStorage.getItem('Firstname');
   }
   getskills(){
     this.skilladdprogress = true;
@@ -142,5 +148,15 @@ export class AddSkillsComponent implements OnInit {
       this.selectedChips.push(query);
     }
     console.log('this.selectedChips: ' + this.selectedChips);
+  }
+
+  logout() {
+    localStorage.clear();
+    this.router.navigate([""]);
+  }
+
+
+  openBottomSheet(): void {
+    this._bottomSheet.open(UploaadResumeBottomSheetComponent);
   }
 }

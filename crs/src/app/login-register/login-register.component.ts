@@ -202,6 +202,9 @@ export class LoginRegisterComponent implements OnInit {
     this.bodyerrormessage=false;
   }
   login() {
+    if(this.usernamecontrol.value==''||this.loginpasswordcontrol.value==''){
+      return
+    }
     this.loginprogress = true;
     let loginpayload = {
       "username": this.usernamecontrol.value,

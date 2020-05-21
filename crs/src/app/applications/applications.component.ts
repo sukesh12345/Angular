@@ -51,7 +51,7 @@ export class ApplicationsComponent implements OnInit {
           this.noapplications = true;
           this.timecount=10;
           setTimeout(() => {
-            this.router.navigate(['profile']);
+            this.router.navigate(['selectedstudents']);
         }, 5000);  
          
           console.log(error);
@@ -68,6 +68,20 @@ export class ApplicationsComponent implements OnInit {
   selectstudent(studentid){
     this.applicationsearch=true;
     this.status = 'selected';
+    this.ApiService.updateapplicationstatus(studentid,this.status)
+    .subscribe(
+      data=>{
+        this.viewapplications();
+        this.status = 'notselected';
+      },
+      error=>{
+        console.log(error);
+      }
+    )
+  }
+  rejectstudent(studentid){
+    this.applicationsearch=true;
+    this.status = 'rejected';
     this.ApiService.updateapplicationstatus(studentid,this.status)
     .subscribe(
       data=>{

@@ -39,6 +39,14 @@ import { SelectedJobsComponent } from './selected-jobs/selected-jobs.component';
 import { AboutComponent } from './about/about.component';
 import { SkilsModalComponent } from './skils-modal/skils-modal.component';
 import { JobDeleteConfirmationComponent } from './job-delete-confirmation/job-delete-confirmation.component';
+import { LandingComponent } from './landing/landing.component';
+import { AlertModule } from 'ngx-bootstrap/alert';
+import { CarouselModule } from 'ngx-bootstrap/carousel';
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
+import { UploaadResumeBottomSheetComponent } from './uploaad-resume-bottom-sheet/uploaad-resume-bottom-sheet.component';
+import {MatBottomSheetModule} from '@angular/material/bottom-sheet';
+import {MatListModule} from '@angular/material/list';
+import { RejectedStudentsComponent } from './rejected-students/rejected-students.component';
 
 
 
@@ -55,11 +63,15 @@ import { JobDeleteConfirmationComponent } from './job-delete-confirmation/job-de
     SelectedJobsComponent,
     AboutComponent,
     SkilsModalComponent,
-    JobDeleteConfirmationComponent
+    JobDeleteConfirmationComponent,
+    LandingComponent,
+    UploaadResumeBottomSheetComponent,
+    RejectedStudentsComponent
   ],
   entryComponents: [
     SkilsModalComponent,
-    JobDeleteConfirmationComponent
+    JobDeleteConfirmationComponent,
+    UploaadResumeBottomSheetComponent
   ],
   imports: [
     BrowserModule,
@@ -92,8 +104,14 @@ import { JobDeleteConfirmationComponent } from './job-delete-confirmation/job-de
     MatDividerModule,
     MatChipsModule,
     MatAutocompleteModule,
+    AlertModule.forRoot(),
+    CarouselModule,
+    MatButtonToggleModule,
+    MatBottomSheetModule,
+    MatListModule,
     // MaterialModue,
     RouterModule.forRoot([
+      { path: 'landing', component: LandingComponent},
       { path: '', component: LoginRegisterComponent },
       { path: 'profile', component: DashboardComponent ,resolve:[AuthGuard]},
       { path: 'update', component: UpdateComponent ,resolve:[AuthGuard]},
@@ -102,7 +120,8 @@ import { JobDeleteConfirmationComponent } from './job-delete-confirmation/job-de
       { path: 'addskills' ,  component: AddSkillsComponent ,resolve:[AuthGuard]},
       { path: 'selectedstudents' , component: SelectedStudentsComponent ,resolve:[AuthGuard]},
       { path: 'selectedjobs' , component: SelectedJobsComponent ,resolve:[AuthGuard]},
-      { path: 'about' , component: AboutComponent }
+      { path: 'about' , component: AboutComponent },
+      { path: 'rejectedstudents' , component: RejectedStudentsComponent}
     ]),
     
   ],

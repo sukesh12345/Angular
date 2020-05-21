@@ -1,1 +1,54 @@
-<p>about works!</p>
+
+<div class="container"  #top>
+    <button mat-button (click)="scroll(element)">go</button>
+      <carousel >
+        <slide>
+          <img src="../../assets/images/1.png" alt="first slide" style="display: block; width: 100%;">
+        </slide>
+        <slide>
+          <img src="../../assets/images/2.png" alt="second slide" style="display: block; width: 100%;">
+        </slide>
+        <slide>
+          <img src="../../assets/images/3.png" alt="third slide" style="display: block; width: 100%;">
+        </slide>
+      </carousel>
+</div>
+<div class="container"  #element>
+      <carousel>
+        <slide>
+          <div class="text-center py-5 bg-dark text-white" >
+            <h2>First custom content</h2>
+            <div class="lead">
+              <h3>First slide label</h3>
+              <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
+            </div>
+          </div>
+        </slide>
+        <slide>
+          <div class="text-center py-5 bg-dark text-white">
+            <h2>Second custom content</h2>
+            <div class="lead">
+              <h3>Second slide label</h3>
+              <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
+            </div>
+          </div>
+        </slide>
+        <slide>
+          <div class="text-center py-5 bg-dark text-white">
+            <h2>Third custom content</h2>
+            <div class="lead">
+              <h3>Third slide label</h3>
+              <p>Nulla vitae elit libero, a pharetra augue mollis interdum. </p>
+            </div>
+          </div>
+        </slide>
+      </carousel>
+      <button mat-icon-button style="align-self: flex-end;float: right;" (click)="scrolltop(top)" >
+        <span class="material-icons">
+          arrow_upward
+          </span></button>
+  </div>
+  
+  
+  
+  

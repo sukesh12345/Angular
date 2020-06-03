@@ -32,8 +32,15 @@ export interface jobdata {
     Drivedetails: any,
     __kf_UserId: any,
     CompanyWebsite: any,
-    CompanyLocation: any
+    CompanyLocation: any,
+    image:any
 }
 export interface skills{
     skillname:any;
 }
+export class  ImageSnippet {
+    pending: boolean = false;
+    status: string = 'init';
+  
+    constructor(public src: string, public file: File) {}
+  }

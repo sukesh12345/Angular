@@ -1,12 +1,16 @@
-
-       <div class="container">
-            <div class="float-sm-left">
-                <input type="file" mat-input (change)="onfileselected($event);">
-            </div>
-            <div class="float-sm-right">
-                <button mat-mini-fab color="primary" (click)="onupload();">
-                    <mat-icon>arrow_upward
-                    </mat-icon>
-                  </button>
-            </div>
-       </div>
+<!-- <div>
+    <mat-progress-bar mode="indeterminate" class="progress-bar" *ngIf="upload"></mat-progress-bar>
+</div> -->
+<div class="container">
+    <div class="float-sm-left">
+        <!-- <input type="file" mat-input (change)="onfileselected($event);"> -->
+        <input  #imageInput type="file" accept="application/pdf" (change)="processFile(imageInput)">
+    </div>
+    <div class="float-sm-right">
+        <button mat-mini-fab color="primary" (click)="onupload();">
+            <mat-icon>arrow_upward
+            </mat-icon>
+        </button>
+    </div>
+    <mat-hint>**Only pdf are allowed</mat-hint>
+</div>

@@ -8,13 +8,15 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { MatAutocompleteSelectedEvent, MatAutocomplete } from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
-import { Observable } from 'rxjs';
+import { Observable, from } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { SkilsModalComponent } from '../skils-modal/skils-modal.component';
 import { JobDeleteConfirmationComponent } from '../job-delete-confirmation/job-delete-confirmation.component';
-import {MatBottomSheet, MatBottomSheetRef} from '@angular/material/bottom-sheet';
+import { MatBottomSheet, MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import { UploaadResumeBottomSheetComponent } from '../uploaad-resume-bottom-sheet/uploaad-resume-bottom-sheet.component';
+import { DomSanitizer } from '@angular/platform-browser';
+import { ImageSnippet } from '../interface/interface'
 
 @Component({
   selector: 'app-dashboard',
@@ -32,6 +34,7 @@ export class DashboardComponent implements OnInit {
   filteredskills: Observable<string[]>;
   skills: string[] = [];
   allskills: string[] = [];
+
 
   @ViewChild('skillinput', { static: false }) skillinput: ElementRef<HTMLInputElement>;
   @ViewChild('auto', { static: false }) matAutocomplete: MatAutocomplete;
@@ -91,13 +94,20 @@ export class DashboardComponent implements OnInit {
   selectedjobstoggle: any;
   skillfilter: string[] = [];
   companies: string[] = [];
-  companyfilter: string[]= [];
+  companyfilter: string[] = [];
   jobfilters: string[] = [];
   filtercheckbox: any;
   applymessage = "Applied succesfully";
-  close = "Close";
+  close = "Ok";
+  filters = true;
+  url: any;
+  selectedfile:ImageSnippet= null;
+  upload : any;
+  image: any;
+  position: any;
+  companylogoimage:any;
 
-  constructor(private ApiService: ApiService, private router: Router, public dialog: MatDialog, private _bottomSheet: MatBottomSheet , private _snackBar: MatSnackBar) {
+  constructor(private ApiService: ApiService, private router: Router, public dialog: MatDialog, private _bottomSheet: MatBottomSheet, private _snackBar: MatSnackBar, public domSanitizer: DomSanitizer) {
     this.filteredskills = this.skillcontrol.valueChanges.pipe(
       startWith(null),
       map((skill: string | null) => skill ? this._filter(skill) : this.allskills.slice()));
@@ -105,6 +115,7 @@ export class DashboardComponent implements OnInit {
     this._bottomSheet.open(UploaadResumeBottomSheetComponent);
   }
   ngOnInit() {
+    console.log("ngoninit");
     this.addskillstoggle = false;
     this.dashboardprogress = true;
     this.applyprogress = false;
@@ -128,7 +139,8 @@ export class DashboardComponent implements OnInit {
     this.nopostedjobs = false;
     this.noskillsadded = false;
     this.skillstackdisplay = false;
-
+    this.filters = false;
+    this.getlogo();
     this.ApiService.getskills()
       .subscribe(
         data => {
@@ -136,14 +148,19 @@ export class DashboardComponent implements OnInit {
         }
       )
 
-      this.ApiService.companies()
+    this.ApiService.companies()
       .subscribe(
-        data=>{
+        data => {
           this.companies = data.data;
         }
       )
+    this.getuser();
 
+    
 
+  }
+
+  getuser(){
     this.ApiService.getuser()
       .subscribe
       (
@@ -159,10 +176,10 @@ export class DashboardComponent implements OnInit {
           else {
             this.approved = false;
           }
-          // console.log("here");
+          console.log("here");
           this.expression = true;
           if (this.userinfo.Type[0] == "Student") {
-            localStorage.setItem('Firstname',this.userinfo.Firstname[0]);
+            localStorage.setItem('Firstname', this.userinfo.Firstname[0]);
             this.addskillstoggle = true;
             this.student = true;
             this.skillstackdisplay = true;
@@ -173,6 +190,7 @@ export class DashboardComponent implements OnInit {
                   this.noskillsadded = false;
                   this.skillstackdisplay = true;
                   this.skillstack = data.data;
+                  
                   this.viewmatchingjobs();
 
                 },
@@ -198,15 +216,12 @@ export class DashboardComponent implements OnInit {
           }, 5000);
         }
       )
-
   }
+
   openskillsdialog(jobid) {
     this.dialog.open(SkilsModalComponent, { data: jobid })
   }
-  drivedateControl = new FormControl('', [Validators.required]);
-  companyControl = new FormControl('', [Validators.required]);
-  drivedetailsControl = new FormControl('', [Validators.required]);
-  companywebsiteControl = new FormControl('', [Validators.required]);
+
   logout() {
     localStorage.clear();
     this.router.navigate([""]);
@@ -343,7 +358,6 @@ export class DashboardComponent implements OnInit {
           this.deleteprogress = false;
         }
       )
-    console.log("2" + this.jobdata);
   }
 
 
@@ -356,17 +370,16 @@ export class DashboardComponent implements OnInit {
     this.ApiService.getmatchingjobs()
       .subscribe(
         data => {
-          
+
           if (data.data[0] == 'There are no matched jobs') {
-            console.log("nomatched jobs");
             this.nojobsmatch = true;
             this.student = false;
           }
           else {
             this.expression = true;
-            // console.log(data.data);
 
             this.jobdata = data.data;
+            console.log(this.jobdata[0].image);
             this.student = true;
             this.nojobsmatch = false;
           }
@@ -385,7 +398,7 @@ export class DashboardComponent implements OnInit {
     this.router.navigate(['applications']);
   }
   selectedstudents(jobid) {
-   
+
     localStorage.setItem('jobid', jobid[0]);
     this.router.navigate(['selectedstudents']);
   }
@@ -408,6 +421,7 @@ export class DashboardComponent implements OnInit {
     this.viewjobstoggle = false;
     this.color = "primary";
     this.skills = [];
+    this.addjobform.reset();
   }
   viewjoblist() {
     this.addjob = false;
@@ -417,18 +431,30 @@ export class DashboardComponent implements OnInit {
     this.viewjobstoggle = false;
     this.updateinfotoggle = true;
   }
-  companylocationControl = new FormControl;
+
+  drivedateControl = new FormControl('', [Validators.required]);
+  companyControl = new FormControl('', [Validators.required]);
+  drivedetailsControl = new FormControl('', [Validators.required]);
+  companywebsiteControl = new FormControl('', [Validators.required]);
+  companylocationControl = new FormControl('', [Validators.required]);
+  addjobform = new FormGroup({
+    drivedateControl: this.drivedateControl,
+    companyControl: this.companyControl,
+    drivedetailsControl: this.drivedetailsControl,
+    companywebsiteControl: this.companywebsiteControl,
+    companylocationControl: this.companylocationControl
+  })
   savejob() {
     this.addjobprogress = true;
-    console.log(this.skills);
-    console.log(this.Companylocation)
+    this.color = "primary";
     let addjobpayload = {
       "Company": this.Company,
       "DriveDate": this.DriveDate,
       "Drivedetails": this.Drivedetails,
       "CompanyWebsite": this.CompanyWebsite,
       "CompanyLocation": this.companylocationControl.value,
-      "array": this.skills
+      "array": this.skills,
+      "image": this.companylogoimage
     }
     this.ApiService.addjob(addjobpayload)
       .subscribe(
@@ -437,12 +463,9 @@ export class DashboardComponent implements OnInit {
           this.addjob = false;
           this.expression = true;
           this.viewjobstoggle = false;
-          this.Company = null;
-          this.DriveDate = null;
-          this.Drivedetails = null;
-          this.CompanyWebsite = null;
           this.addjobprogress = false;
           this.skills = [];
+          this.addjobform.reset();
           this.ngOnInit();
         },
         error => {
@@ -460,7 +483,6 @@ export class DashboardComponent implements OnInit {
     dialogref.afterClosed().subscribe(
       result => {
         this.deletejobconfirmationdialogresult = result;
-        console.log("here" + this.deletejobconfirmationdialogresult);
         if (this.deletejobconfirmationdialogresult == 'true') {
           this.deletejob(jobid)
         }
@@ -481,17 +503,21 @@ export class DashboardComponent implements OnInit {
         }
       )
   }
-  applyjob(jobid,companyname) {
+  applyjob(jobid, companyname) {
     this.applyprogress = true;
     this.ApiService.applyjob(jobid, this.userinfo.Firstname)
       .subscribe(
         data => {
           // console.log(data.data);
           this.applyprogress = false;
-          this.applymessage = "Applied to "+companyname;
-          this.openSnackBar(this.applymessage,this.close);
-          this.viewmatchingjobs();
-
+          this.applymessage = "Applied to " + companyname;
+          this.openSnackBar(this.applymessage, this.close);
+          if (!this.filters) {
+            this.viewmatchingjobs();
+          }
+          else {
+            this.applyfilters();
+          }
         },
         error => {
           console.log(error);
@@ -521,7 +547,6 @@ export class DashboardComponent implements OnInit {
     if (index >= 0) {
       this.skills.splice(index, 1);
     }
-    console.log(this.skills);
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
@@ -543,7 +568,6 @@ export class DashboardComponent implements OnInit {
     } else {
       this.selectedChips.push(query);
     }
-    console.log('this.selectedChips: ' + this.selectedChips);
   }
 
   skillfilters(e, skill) {
@@ -564,31 +588,35 @@ export class DashboardComponent implements OnInit {
   }
   applyfilters() {
     this.nojobsmatch = false;
-    if(this.skillfilter == null && this.companyfilter==null){
+    if (this.skillfilter == null && this.companyfilter == null) {
       return
     }
     this.matchjobprogress = true;
     let jobfilterspayload = {
-      "skillfilter" : this.skillfilter,
-      "companyfilter" : this.companyfilter
+      "skillfilter": this.skillfilter,
+      "companyfilter": this.companyfilter
     }
     // console.log(jobfilterspayload);
     this.ApiService.filteredjobs(jobfilterspayload)
-    .subscribe(
-      data=>{
-        this.matchjobprogress = false;
-        this.jobdata=data.data;
-        if(this.jobdata[0] == 'There are no matched jobs'){
+      .subscribe(
+        data => {
+          this.matchjobprogress = false;
+          this.filters = true;
+          this.jobdata = data.data;
+          if (this.jobdata[0] == 'There are no matched jobs') {
             this.nojobsmatch = true;
+            this.skillfilter = [];
+            this.companyfilter = [];
+          }
         }
-      }
-    )
+      )
   }
-  clearfilters(){
+  clearfilters() {
     this.viewmatchingjobs();
     this.filtercheckbox = false;
     this.skillfilter = [];
     this.companyfilter = [];
+    this.filters = false;
   }
 
   openSnackBar(message: string, action: any) {
@@ -597,4 +625,57 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+  private onSuccess() {
+    this.selectedfile.pending = false;
+    this.selectedfile.status = 'ok';
+  }
+  
+  processFile(companylogo: any) {
+    const file: File = companylogo.files[0];
+    const reader = new FileReader();
+    reader.addEventListener('load', (event: any) => {
+      this.selectedfile = new ImageSnippet(event.target.result, file);
+      // console.log(imageInput.files[0].size/1024);
+      // if(imageInput.files[0].size/1024>512){
+      //   this.openSnackBar("File size exceeds 512kb","Ok");
+      //   this._bottomSheetRef.dismiss(); 
+      //   return
+      // }
+      this.image = this.selectedfile.src;
+      for( let i = 0 ; i < this.image.length ; i++ ) {
+        if(this.image[i] == ',') {
+          this.position = i + 1;
+          break;
+        }
+      }
+      this.companylogoimage = this.image.slice(this.position);
+      // console.log(this.formData);
+
+      this.selectedfile.pending = true;
+      this.onSuccess(); 
+    });
+
+
+    //sda
+    reader.readAsDataURL(file);
+  }
+
+
+  getlogo(){
+    this.ApiService.test()
+    .subscribe(
+      data => {
+        // console.log(data.data);
+        // console.log(data);
+        this.url= this.domSanitizer.bypassSecurityTrustUrl(data.data);
+        console.log(this.url);
+        // this.url = data.data;
+        // console.log(this.url)//mmm
+      },
+      error => {
+        console.log(error);
+      }
+    )
+    
+  }
 }

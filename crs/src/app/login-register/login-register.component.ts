@@ -202,6 +202,7 @@ export class LoginRegisterComponent implements OnInit {
     this.bodyerrormessage=false;
   }
   login() {
+    this.color = 'primary';
     if(this.usernamecontrol.value==''||this.loginpasswordcontrol.value==''){
       return
     }

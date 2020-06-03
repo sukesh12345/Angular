@@ -130,7 +130,7 @@
   padding-top: 50px;
 }
 .fixed-toolbar{
-  position: fixed;
+ 
   top: 0;
   left: 0;
   z-index: 2;
@@ -167,3 +167,11 @@
   height: 92%;
  position: relative;
 }
+
+.fit-image{
+  width: 100%;
+  object-fit: cover;
+  height: 30px; /* only if you want fixed height */
+  width: 30px;
+  border-radius: 30px;
+  }

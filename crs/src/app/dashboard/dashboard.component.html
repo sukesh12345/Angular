@@ -3,7 +3,8 @@
         <p><button mat-button (click)="sidenav.toggle()"><span class="material-icons">
                     keyboard_backspace
                 </span></button></p>
-        <p><button mat-menu-item (click)="sidenav.toggle();openBottomSheet();" *ngIf="student"> &nbsp;&nbsp;<mat-icon color="primary">
+        <p><button mat-menu-item (click)="sidenav.toggle();openBottomSheet();" *ngIf="student"> &nbsp;&nbsp;<mat-icon
+                    color="primary">
                     cloud_upload</mat-icon>&nbsp;&nbsp;Upload Resume
             </button>
         </p>
@@ -31,8 +32,7 @@
         <p>
             <button mat-menu-item (click)="sidenav.toggle();addnewjob();" *ngIf="addjobtoggle">&nbsp;&nbsp;<mat-icon
                     color="primary">
-                    add_box</mat-icon>&nbsp;&nbsp;<b>Add
-                    New</b>&nbsp;</button></p>
+                    add_box</mat-icon>&nbsp;&nbsp;<b>Post a Job</b>&nbsp;</button></p>
         <!-- <p>
             <button mat-menu-item>&nbsp;&nbsp;<mat-icon color="primary">report_problem</mat-icon>
                 &nbsp;&nbsp;<b>Report an issue</b></button></p> -->
@@ -43,18 +43,19 @@
     </mat-sidenav>
 
     <mat-sidenav-content>
-        
+
         <div *ngIf="approved" class="not-approved">
             <mat-card>
                 <mat-card-header>
                     <p>you're not approved please login after sometime</p>
                 </mat-card-header>
                 <mat-card-content>
-                    <button mat-button *ngIf="approved" (click)="logout()">&nbsp;&nbsp;<mat-icon color="primary">input</mat-icon>
-                        &nbsp;&nbsp;<b>Log Out</b></button> 
+                    <button mat-button *ngIf="approved" (click)="logout()">&nbsp;&nbsp;<mat-icon color="primary">input
+                        </mat-icon>
+                        &nbsp;&nbsp;<b>Log Out</b></button>
                 </mat-card-content>
             </mat-card>
-           
+
         </div>
         <div class="fixed-toolbar">
             <mat-toolbar color="primary"
@@ -63,12 +64,35 @@
 
                     <button mat-button *ngIf="load" (click)="sidenav.toggle()"> <span class="material-icons">
                             menu
-                        </span>Hi {{userinfo.Firstname[0]}}!!</button>
+                        </span><span style="font-size: 18px;">Hi {{userinfo.Firstname[0]}}!!</span></button>
                     <mat-menu #menu="matMenu">
 
 
                     </mat-menu>
                     <span class="spacer"></span>
+                    
+          
+            <button mat-button (click)="viewjoblist();sidenav.toggle();" *ngIf="viewjobstoggle">
+                    &nbsp;&nbsp;<mat-icon color="white">work</mat-icon>&nbsp;&nbsp;View Posted Jobs
+                </button>
+            <button mat-button (click)="sidenav.toggle();viewmatchingjobs();"
+                    *ngIf="viewmatchingjobstoggle">&nbsp;&nbsp;<mat-icon color="white">
+                        equalizer</mat-icon>&nbsp;&nbsp;<b>View matching Jobs</b>&nbsp;</button>
+            <button mat-button (click)="sidenav.toggle();viewalljobs();" *ngIf="viewalljobstoggle">
+                    &nbsp;&nbsp;<mat-icon color="white">work</mat-icon>&nbsp;&nbsp;<b>View All Jobs</b>
+                </button>
+           <button mat-button (click)="sidenav.toggle();appliedjobs();" *ngIf="appliedjobstoggle">
+                    &nbsp;&nbsp;<mat-icon color="white">work</mat-icon>&nbsp;&nbsp;<b>View Applied Jobs</b>
+                </button>
+           <button mat-button (click)="sidenav.toggle;" routerLink="/selectedjobs" *ngIf="selectedjobstoggle">&nbsp;
+                    <mat-icon color="white">check_box</mat-icon>&nbsp;&nbsp;<b>View Selected Jobs</b></button>
+            <!-- <p>
+                <button mat-menu-item>&nbsp;&nbsp;<mat-icon color="primary">report_problem</mat-icon>
+                    &nbsp;&nbsp;<b>Report an issue</b></button></p> -->
+<!--           
+                <button mat-button (click)="logout()">&nbsp;&nbsp;<mat-icon color="primary">input</mat-icon>
+                    &nbsp;&nbsp;<b>Log
+                        Out</b></button> -->
                     <!-- <mat-icon class="example-icon" aria-hidden="false" aria-label="Example heart icon">favorite</mat-icon> -->
                     <!-- <span class="space">About</span>
                     <span class="cursor">Contact Us</span>
@@ -91,7 +115,7 @@
         <div class="noskills" *ngIf="noskillsadded">
             <br>
             <br>
-            <mat-card >
+            <mat-card>
                 <mat-card-header>
                     <p>You haven't added any skills........
                         <a mat-button style="padding-left: 0px;" color="primary" routerLink="/addskills">
@@ -102,7 +126,7 @@
         </div>
 
         <div *ngIf="expression" class="nav-content">
-            <div *ngIf="(student||!noskillsadded)&&!recruiter" class="rowjobs" >
+            <div *ngIf="(student||!noskillsadded)&&!recruiter" class="rowjobs">
                 <div class="filters" *ngIf="(student||!noskillsadded)&&!recruiter&&skillstackdisplay">
 
                     <div class="filter-buttons">
@@ -143,11 +167,16 @@
                         </mat-chip>
                     </mat-chip-list>
                 </div>
-                <div *ngFor="let obj of jobdata">
+                <div *ngFor="let obj of jobdata;let i = index;">
                     <mat-card class="example-card" *ngIf="!nojobsmatch">
                         <mat-card-header>
                             <div class="container">
                                 <div class="float-sm-left">
+                                    <!-- <img src="http://localhost/crs/public/temp/jpg.jpg" alt=""
+                                        class="img-responsive fit-image"> -->
+                                        <a [href]="url" download="file.pdf">hi</a>
+                                    <img
+                                        src="{{obj.image}}"  class="img-fluid fit-image" alt="Responsive image">
                                     <a mat-button color="primary" href="{{obj.CompanyWebsite}}"
                                         rel="noopener noreferrer" target="_blank">
                                         <mat-icon>link</mat-icon> {{obj.Company}}
@@ -177,7 +206,8 @@
                             </p>
                         </mat-card-content>
                         <mat-card-actions>
-                            <button mat-flat-button (click)="applyjob(obj.___kp_JobId,obj.Company)" color="primary">Apply
+                            <button mat-flat-button (click)="applyjob(obj.___kp_JobId,obj.Company)"
+                                color="primary">Apply
                             </button>
                             <button mat-flat-button color="primary" (click)="openskillsdialog(obj.___kp_JobId);"
                                 style="margin-left: 10px;">View Required Skills</button>
@@ -191,6 +221,10 @@
                 <mat-card>
                     <mat-card-content>
                         You haven't posted any jobs yet!!!
+                        <button mat-button (click)="addnewjob();" *ngIf="addjobtoggle">&nbsp;&nbsp;<mat-icon
+                                color="primary">
+                                add_box</mat-icon>&nbsp;&nbsp;<b>Add
+                                New</b>&nbsp;</button>
                     </mat-card-content>
                 </mat-card>
             </div>
@@ -200,6 +234,8 @@
                         <mat-card-header>
                             <div class="container">
                                 <div class="float-sm-left">
+                                    <img
+                                    src="{{obj.image}}"  class="img-fluid fit-image" alt="Responsive image">
                                     <a mat-button color="primary" href="{{obj.CompanyWebsite}}"
                                         rel="noopener noreferrer" target="_blank">
                                         <mat-icon>link</mat-icon> {{obj.Company}}
@@ -221,9 +257,9 @@
                             <p>
                                 JobId: {{obj.___kp_JobId}}
                             </p>
-                            <p>Drive date: {{obj.DriveDate}}</p>
+                            <p>Interview date: {{obj.DriveDate}}</p>
                             <p>
-                                {{obj.Drivedetails}}
+                                Interview details: {{obj.Drivedetails}}
                             </p>
                         </mat-card-content>
                         <mat-card-actions>
@@ -231,6 +267,8 @@
                                 color="primary">Applications</button>
                             <button mat-flat-button color="primary" (click)="selectedstudents(obj.___kp_JobId)"
                                 style="margin-left: 10px;">Selected Students</button>
+                            <button mat-flat-button color="primary" (click)="openskillsdialog(obj.___kp_JobId);"
+                                style="margin-left: 10px;">View Required Skills</button>
                         </mat-card-actions>
                     </mat-card>
                     <mat-divider></mat-divider>
@@ -375,11 +413,13 @@
                 <mat-card-header>
                     <!-- <div mat-card-avatar class="example-header-image"></div> -->
                     <mat-card-title>Fill Job Details</mat-card-title>
+                  
                     <!-- <mat-card-subtitle>Dog Breed</mat-card-subtitle> -->
                 </mat-card-header>
 
                 <mat-card-content>
-                    <form>
+                    
+                    <form [formGroup]="addjobform">
                         <mat-form-field class="full-width">
                             <mat-label>Company Name</mat-label>
                             <input matInput [(ngModel)]="Company" [formControl]="companyControl" required>
@@ -392,7 +432,7 @@
                             </mat-error>
                         </mat-form-field>
                         <mat-form-field class="full-width">
-                            <mat-label>Drive Details</mat-label>
+                            <mat-label>Interview Details</mat-label>
                             <textarea matInput [(ngModel)]="Drivedetails" [formControl]="drivedetailsControl"
                                 required></textarea>
                             <mat-error *ngIf="drivedetailsControl.hasError('required')">Enter Drive details</mat-error>
@@ -408,6 +448,8 @@
                             <mat-label>Add location</mat-label>
                             <input matInput [(ngModel)]="Companylocation" [formControl]="companylocationControl"
                                 required>
+                                <mat-error *ngIf="companylocationControl.hasError('required')">Enter company location
+                                </mat-error>
                         </mat-form-field>
                         <!-- <mat-form-field class="full-width">
                             <mat-label>Add Skill :</mat-label>
@@ -425,7 +467,7 @@
                             <mat-hint>**Skills will be saved Automatically on selecting</mat-hint>
                         </mat-form-field> -->
                         <mat-form-field class="full-width">
-                            <mat-label>Add Requirement</mat-label>
+                            <mat-label>Add Requirement<sup>*</sup></mat-label>
                             <mat-chip-list #chipList aria-label="skill selection">
 
                                 <input matInput placeholder="Type C,Cplusplus etc...." #skillinput
@@ -441,11 +483,16 @@
                             </mat-autocomplete>
 
                         </mat-form-field>
+                        <!-- <mat-form-field class="full-width"> -->
+                            <mat-label>Add logo</mat-label><br>
+                            <input type="file" #companylogo type="file" accept="image/*" (change)="processFile(companylogo)">
+                        <!-- </mat-form-field> -->
+                        <button mat-button type="submit" color="primary" (click)="savejob();">ADD</button>
+                        <button mat-button color="warn" (click)="addjobcancel();">CANCEL</button>
                     </form>
                 </mat-card-content>
                 <mat-card-actions>
-                    <button mat-button color="primary" (click)="savejob();">ADD</button>
-                    <button mat-button color="warn" (click)="addjobcancel();">CANCEL</button>
+                   
                 </mat-card-actions>
             </mat-card>
             <div class="skill-chip">
